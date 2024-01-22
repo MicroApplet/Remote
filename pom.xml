@@ -75,12 +75,23 @@
 
 
     <modules>
+        <module>remote-core</module>
+        <module>remote-spring</module>
+        <module>remote-net</module>
+        <module>remote-net-netty</module>
+        <module>remote-net-http</module>
+        <module>remote-net-http-apache</module>
+        <module>remote-net-http-netty</module>
+        <module>remote-net-proxy</module>
+        <module>remote-net-repository</module>
+        <module>remote-zen-pom</module>
     </modules>
 
     <properties>
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
         <spring-boot.version>3.2.1</spring-boot.version>
+        <mybatis-plus.version>3.5.5</mybatis-plus.version>
     </properties>
 
     <dependencyManagement>
@@ -92,7 +103,23 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
-
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>mybatis-plus-bom</artifactId>
+                <version>${mybatis-plus.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-collections4</artifactId>
+                <version>4.4</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-io</groupId>
+                <artifactId>commons-io</artifactId>
+                <version>2.15.1</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
