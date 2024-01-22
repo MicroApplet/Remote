@@ -24,6 +24,7 @@
     </parent>
 
     <artifactId>remote-zen-pom</artifactId>
+    <packaging>pom</packaging>
 
     <dependencyManagement>
         <dependencies>
