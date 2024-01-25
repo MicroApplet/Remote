@@ -19,7 +19,7 @@
     <parent>
         <groupId>io.github.microapplet</groupId>
         <artifactId>remote</artifactId>
-        <version>1.0.0-SNAPSHOT</version>
+        <version>1.0.0</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
@@ -31,42 +31,42 @@
             <dependency>
                 <groupId>io.github.microapplet</groupId>
                 <artifactId>remote-core</artifactId>
-                <version>1.0.0-SNAPSHOT</version>
+                <version>1.0.0</version>
             </dependency>
             <dependency>
                 <groupId>io.github.microapplet</groupId>
                 <artifactId>remote-net</artifactId>
-                <version>1.0.0-SNAPSHOT</version>
+                <version>1.0.0</version>
             </dependency>
             <dependency>
                 <groupId>io.github.microapplet</groupId>
                 <artifactId>remote-net-http</artifactId>
-                <version>1.0.0-SNAPSHOT</version>
+                <version>1.0.0</version>
             </dependency>
             <dependency>
                 <groupId>io.github.microapplet</groupId>
                 <artifactId>remote-net-http-apache</artifactId>
-                <version>1.0.0-SNAPSHOT</version>
+                <version>1.0.0</version>
             </dependency>
             <dependency>
                 <groupId>io.github.microapplet</groupId>
                 <artifactId>remote-net-http-netty</artifactId>
-                <version>1.0.0-SNAPSHOT</version>
+                <version>1.0.0</version>
             </dependency>
             <dependency>
                 <groupId>io.github.microapplet</groupId>
                 <artifactId>remote-net-netty</artifactId>
-                <version>1.0.0-SNAPSHOT</version>
+                <version>1.0.0</version>
             </dependency>
             <dependency>
                 <groupId>io.github.microapplet</groupId>
                 <artifactId>remote-net-proxy</artifactId>
-                <version>1.0.0-SNAPSHOT</version>
+                <version>1.0.0</version>
             </dependency>
             <dependency>
                 <groupId>io.github.microapplet</groupId>
                 <artifactId>remote-spring</artifactId>
-                <version>1.0.0-SNAPSHOT</version>
+                <version>1.0.0</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

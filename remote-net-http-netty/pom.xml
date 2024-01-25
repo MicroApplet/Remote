@@ -20,7 +20,7 @@
     <parent>
         <groupId>io.github.microapplet</groupId>
         <artifactId>remote</artifactId>
-        <version>1.0.0-SNAPSHOT</version>
+        <version>1.0.0</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
@@ -31,28 +31,28 @@
         <dependency>
             <groupId>io.github.microapplet</groupId>
             <artifactId>remote-core</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+            <version>1.0.0</version>
             <scope>compile</scope>
         </dependency>
         <!--suppress VulnerableLibrariesLocal -->
         <dependency>
             <groupId>io.github.microapplet</groupId>
             <artifactId>remote-net</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+            <version>1.0.0</version>
             <scope>compile</scope>
         </dependency>
         <!--suppress VulnerableLibrariesLocal -->
         <dependency>
             <groupId>io.github.microapplet</groupId>
             <artifactId>remote-net-netty</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+            <version>1.0.0</version>
             <scope>compile</scope>
         </dependency>
         <!--suppress VulnerableLibrariesLocal -->
         <dependency>
             <groupId>io.github.microapplet</groupId>
             <artifactId>remote-net-http</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+            <version>1.0.0</version>
             <scope>compile</scope>
         </dependency>
 
