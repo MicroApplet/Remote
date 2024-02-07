@@ -13,20 +13,58 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- package io.github.microapplet.remote.config;
+package io.github.microapplet.remote.config;
 
-import lombok.Data;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
- @Data
- @ConfigurationProperties(prefix = RemoteLocalEnvProperty.PREFIX )
- public class RemoteLocalEnvProperty {
-     public static final String PREFIX = "remote.local";
-     public static final String ENABLE = "enable";
-     public static final String CONFIG_CONDITION_NAME = PREFIX + "." + ENABLE;
+/**
+ * Remote 本地环境配置属性
+ *
+ * @author <a href="mailto:asialjim@hotmail.com">Asial Jim</a>
+ * @version 1.0.1
+ * @since 2024/2/1, &nbsp;&nbsp; <em>version:1.0.1</em>
+ */
+@Configuration
+@ConfigurationProperties(prefix = RemoteLocalEnvProperty.PREFIX)
+@SuppressWarnings({"LombokGetterMayBeUsed", "LombokSetterMayBeUsed"})
+public class RemoteLocalEnvProperty {
+    public static final String PREFIX = "remote.local";
 
-     private Boolean enable;
-     private RemoteLocalEnvironment.RemoteLocalEnv env;
-     private RemoteLocalEnvironment.Arch arch;
-     private String primaries;
- }
+    private Boolean enable;
+    private RemoteLocalEnvironment.RemoteLocalEnv env;
+    private RemoteLocalEnvironment.Arch arch;
+    private String primaries;
+
+    public Boolean getEnable() {
+        return enable;
+    }
+
+    public void setEnable(Boolean enable) {
+        this.enable = enable;
+    }
+
+    public RemoteLocalEnvironment.RemoteLocalEnv getEnv() {
+        return env;
+    }
+
+    public void setEnv(RemoteLocalEnvironment.RemoteLocalEnv env) {
+        this.env = env;
+    }
+
+    public RemoteLocalEnvironment.Arch getArch() {
+        return arch;
+    }
+
+    public void setArch(RemoteLocalEnvironment.Arch arch) {
+        this.arch = arch;
+    }
+
+    public String getPrimaries() {
+        return primaries;
+    }
+
+    public void setPrimaries(String primaries) {
+        this.primaries = primaries;
+    }
+}
