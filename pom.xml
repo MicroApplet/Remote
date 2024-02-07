@@ -21,7 +21,7 @@
 
     <groupId>io.github.microapplet</groupId>
     <artifactId>remote</artifactId>
-    <version>1.0.1</version>
+    <version>1.0.2-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>Remote</name>
     <url>https://github.com/MicroApplet/Remote</url>
@@ -69,7 +69,7 @@
         <connection>scm:git:git@github.com:MicroApplet/Remote.git</connection>
         <developerConnection>scm:git:git@github.com:MicroApplet/Remote.git</developerConnection>
         <url>https://github.com/MicroApplet/Remote</url>
-        <tag>v1.0.1</tag>
+        <tag>HEAD</tag>
     </scm>
 
 
