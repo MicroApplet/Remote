@@ -19,7 +19,7 @@ import io.github.microapplet.remote.annotation.RemoteLifeCycle;
 import io.github.microapplet.remote.context.RemoteMethodConfig;
 import io.github.microapplet.remote.context.RemoteMethodParameter;
 import io.github.microapplet.remote.http.annotation.lifecycle.AbstractFormDataLifeCycle;
-import org.springframework.web.multipart.MultipartFile;
+//import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.InputStream;
@@ -51,6 +51,11 @@ public @interface FormData {
 
         @Override
         public void doInit(RemoteMethodConfig methodConfig, RemoteMethodParameter methodParameter, FormData annotation) {
+            List<RemoteMethodParameter> parameters = Optional.ofNullable(methodConfig.config(FORM_DATA_CONFIG)).orElseGet(ArrayList::new);
+            parameters.add(methodParameter);
+            methodConfig.config(FORM_DATA_CONFIG, parameters);
+
+            /*
             Class<?> clazz = methodParameter.getClazz();
             if (File.class.isAssignableFrom(clazz)
                     || byte[].class.isAssignableFrom(clazz)
@@ -65,6 +70,7 @@ public @interface FormData {
             }
             else
                 throw new IllegalStateException("Form Data Request Type: " + methodParameter.getName() + " must be File, byte[], InputStream or Map");
+            */
         }
     }
 }
