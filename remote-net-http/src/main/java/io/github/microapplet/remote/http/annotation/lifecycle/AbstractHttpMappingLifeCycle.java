@@ -96,7 +96,7 @@ import java.util.Optional;
      public void after(Object data, RemoteMethodConfig methodConfig, RemoteReqContext req, RemoteResContext res, Object[] args) {
          doAfter(data, methodConfig, req, res, args);
          log.info("\r\n\tRemote NET Res Line <<< Client:{} <<< Status: {}, ProtocolVersion: {}", methodConfig.getRemoteName(), res.getStatus(), res.getProtocol());
-         log.info("\r\n\tRemote NET Res Head <<< Client:{} <<< {}", methodConfig.getRemoteName(), AbstractJacksonUtil.writeValueAsString(res.getHeaders(), AbstractJacksonUtil.JSON_MAPPER));
+         log.info("\r\n\tRemote NET Res Head <<< Client:{} <<< {}", methodConfig.getRemoteName(), AbstractJacksonUtil.writeValueAsJsonString(res.getHeaders()));
 
          Class<?> returnClass = methodConfig.getReturnClass();
          if (Void.class.isAssignableFrom(returnClass)) {

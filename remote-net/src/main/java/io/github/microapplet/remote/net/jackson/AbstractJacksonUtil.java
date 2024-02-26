@@ -40,6 +40,7 @@ import java.util.*;
  * @version 3.0
  * @since 2023/7/17, &nbsp;&nbsp; <em>version:3.0</em>, &nbsp;&nbsp; <em>java version:8</em>
  */
+@SuppressWarnings("unused")
 public abstract class AbstractJacksonUtil {
     public static final ObjectMapper JSON_MAPPER = new ObjectMapper();
     public static final XmlMapper XML_MAPPER = new XmlMapper();
@@ -68,7 +69,108 @@ public abstract class AbstractJacksonUtil {
         XML_MAPPER.setDateFormat(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"));
     }
 
+    /**
+     * 序列化为Json
+     *
+     * @param body {@link Object body}
+     * @return {@link String }
+     * @since 2024/2/26
+     */
+    public static String writeValueAsJsonString(Object body) {
+        return writeValueAsString(body, JSON_MAPPER);
+    }
 
+    /**
+     * 序列化为XML
+     *
+     * @param body {@link Object body}
+     * @return {@link String }
+     * @since 2024/2/26
+     */
+    public static String writeValueAsXmlString(Object body) {
+        return writeValueAsString(body, XML_MAPPER);
+    }
+
+    /**
+     * Json 反序列化列表
+     *
+     * @param json  {@link String json}
+     * @param clazz {@link Class clazz}
+     * @return {@link List<T> }
+     * @since 2024/2/26
+     */
+    public static <T> List<T> json2list(String json, Class<T> clazz) {
+        return toList(json, clazz, JSON_MAPPER);
+    }
+
+    /**
+     * XML 反序列化为列表
+     *
+     * @param xml   {@link String xml}
+     * @param clazz {@link Class clazz}
+     * @return {@link List<T> }
+     * @since 2024/2/26
+     */
+    public static <T> List<T> xml2list(String xml, Class<T> clazz) {
+        return toList(xml, clazz, XML_MAPPER);
+    }
+
+    /**
+     * Json 反序列化为Map
+     *
+     * @param json  {@link String json}
+     * @param clazz {@link Class clazz}
+     * @return {@link Map}<{@link String},{@link T}>
+     * @since 2024/2/26
+     */
+    public static <T> Map<String, T> json2map(String json, Class<T> clazz) {
+        return toMap(json, clazz, JSON_MAPPER);
+    }
+
+    /**
+     * XML 反序列化为Map
+     *
+     * @param xml   {@link String xml}
+     * @param clazz {@link Class clazz}
+     * @return {@link Map}<{@link String},{@link T}>
+     * @since 2024/2/26
+     */
+    public static <T> Map<String, T> xml2map(String xml, Class<T> clazz) {
+        return toMap(xml, clazz, XML_MAPPER);
+    }
+
+    /**
+     * Json 反序列化为指定类型对象
+     *
+     * @param json  {@link String json}
+     * @param clazz {@link Class clazz}
+     * @return {@link T }
+     * @since 2024/2/26
+     */
+    public static <T> T json2Object(String json, Class<T> clazz) {
+        return toObject(json, clazz, JSON_MAPPER);
+    }
+
+    /**
+     * XML 反序列化为指定类型对象
+     *
+     * @param xml   {@link String xml}
+     * @param clazz {@link Class clazz}
+     * @return {@link T }
+     * @since 2024/2/26
+     */
+    public static <T> T xml2Object(String xml, Class<T> clazz) {
+        return toObject(xml, clazz, XML_MAPPER);
+    }
+
+    /**
+     * 使用指定的序列化器序列化为String
+     *
+     * @param body   {@link Object body}
+     * @param mapper {@link ObjectMapper mapper}
+     * @return {@link String }
+     * @since 2024/2/26
+     */
     public static String writeValueAsString(Object body, ObjectMapper mapper) {
         try {
             return mapper.writeValueAsString(body);
@@ -80,28 +182,15 @@ public abstract class AbstractJacksonUtil {
         }
     }
 
-    @SuppressWarnings("unused")
-    public static String writeValueAsJsonString(Object body) {
-        try {
-            return JSON_MAPPER.writeValueAsString(body);
-        } catch (Throwable t) {
-            log.error("Write Value for: {} Exception: {}", body, t.getMessage(), t);
-            return "{}";
-        }
-    }
-
-    @SuppressWarnings("unused")
-    public static String writeValueAsXmlString(Object body) {
-        try {
-            return XML_MAPPER.writeValueAsString(body);
-        } catch (Throwable t) {
-            log.error("Write Value for: {} Exception: {}", body, t.getMessage(), t);
-            return "</>";
-        }
-    }
-
-
-    @SuppressWarnings("unused")
+    /**
+     * 使用指定的反序列化器反序列化为列表
+     *
+     * @param stringValue {@link String stringValue}
+     * @param clazz       {@link Class clazz}
+     * @param mapper      {@link ObjectMapper mapper}
+     * @return {@link List<T> }
+     * @since 2024/2/26
+     */
     public static <T> List<T> toList(String stringValue, Class<T> clazz, ObjectMapper mapper) {
         if (StringUtils.isBlank(stringValue))
             return Collections.emptyList();
@@ -119,6 +208,15 @@ public abstract class AbstractJacksonUtil {
         }
     }
 
+    /**
+     * 使用指定的反序列化器反序列化字符串为指定类型对象
+     *
+     * @param stringValue {@link String stringValue}
+     * @param tClass      {@link Class tClass}
+     * @param mapper      {@link ObjectMapper mapper}
+     * @return {@link Map}<{@link String},{@link T}>
+     * @since 2024/2/26
+     */
     public static <T> Map<String, T> toMap(String stringValue, Class<T> tClass, ObjectMapper mapper) {
         if (StringUtils.isBlank(stringValue))
             return new HashMap<>();
@@ -145,6 +243,15 @@ public abstract class AbstractJacksonUtil {
         }
     }
 
+    /**
+     * 指定反序列化器反序列化字符串为指定的类型对象
+     *
+     * @param stringValue {@link String stringValue}
+     * @param tClass      {@link Class tClass}
+     * @param mapper      {@link ObjectMapper mapper}
+     * @return {@link T }
+     * @since 2024/2/26
+     */
     public static <T> T toObject(String stringValue, Class<T> tClass, ObjectMapper mapper) {
         if (StringUtils.isBlank(stringValue))
             return null;

@@ -48,7 +48,7 @@ public final class ApplicationJsonRemoteNetResponseParser extends BaseRemoteNetR
         String json = (String) resContext.getTempData();
         Class<?> returnClass = methodConfig.getReturnClass();
 
-        Object res = AbstractJacksonUtil.toObject(json, returnClass, AbstractJacksonUtil.JSON_MAPPER);
+        Object res = AbstractJacksonUtil.json2Object(json, returnClass);
         log.info("\r\n\tRemote NET Res Data <<< Client:{} <<< {}", methodConfig.getRemoteName(),res);
         resContext.setData(res);
     }

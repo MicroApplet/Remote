@@ -48,7 +48,7 @@ public class ApplicationXmlRemoteNetResponseParser extends BaseRemoteNetResponse
         String xml = (String) resContext.getTempData();
         Class<?> returnClass = methodConfig.getReturnClass();
 
-        Object res = AbstractJacksonUtil.toObject(xml, returnClass, AbstractJacksonUtil.XML_MAPPER);
+        Object res = AbstractJacksonUtil.xml2Object(xml, returnClass);
         log.info("\r\n\tRemote NET Res Data <<< Client:{} <<< {}", methodConfig.getRemoteName(),res);
         resContext.setData(res);
     }

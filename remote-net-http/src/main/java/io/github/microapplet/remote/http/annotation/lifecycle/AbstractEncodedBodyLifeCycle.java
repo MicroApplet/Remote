@@ -71,8 +71,8 @@ import static io.github.microapplet.remote.http.annotation.lifecycle.AbstractHtt
                  url_encoded = sj.toString();
              } else {
                  StringJoiner sj = new StringJoiner("&");
-                 String json = AbstractJacksonUtil.writeValueAsString(bodyObj,AbstractJacksonUtil.JSON_MAPPER);
-                 Map<String, String> map = AbstractJacksonUtil.toMap(json,String.class, AbstractJacksonUtil.JSON_MAPPER);
+                 String json = AbstractJacksonUtil.writeValueAsJsonString(bodyObj);
+                 Map<String, String> map = AbstractJacksonUtil.json2map(json,String.class);
                  map.forEach((key, value) -> sj.add(key + "=" + value));
                  url_encoded = sj.toString();
              }
