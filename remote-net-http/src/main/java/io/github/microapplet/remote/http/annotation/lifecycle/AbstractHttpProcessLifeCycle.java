@@ -57,7 +57,7 @@ public abstract class AbstractHttpProcessLifeCycle implements Before, Invoke, Af
         String bodyStr = Optional.ofNullable(req.get(BaseObjectMapperRequestBodyLifeCycle.STRING_BODY_KEY)).orElse(StringUtils.EMPTY);
         String url = req.get(AbstractHttpMappingLifeCycle.HTTP_REQUEST_URI);
         Map<String, String> headers = Optional.ofNullable(req.get(AbstractHttpHeaderLifeCycle.HTTP_HEADER_VALUE)).orElseGet(HashMap::new);
-        headers.putIfAbsent("User-Agent", "Remote HTTP Client on Apache, Java 8");
+        headers.putIfAbsent("User-Agent", "Remote HTTP Client on Java 8");
         headers.putIfAbsent("Host", req.get(RemoteConstant.HOST));
         req.put(AbstractHttpHeaderLifeCycle.HTTP_HEADER_VALUE, headers);
 
