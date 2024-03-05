@@ -122,7 +122,7 @@ public class ApacheRemoteHTTPClient implements RemoteNetClient {
             reg = RegistryBuilder.<ConnectionSocketFactory>create().register(schema, Objects.nonNull(sslContext) ? new SSLConnectionSocketFactory(sslContext, NoopHostnameVerifier.INSTANCE) : PlainConnectionSocketFactory.getSocketFactory()).build();
         }
         cm = new PoolingHttpClientConnectionManager(reg);
-        POOLING_HTTP_CLIENT_CONNECTION_MANAGER_MAP.put(this.nodeCode,cm);
+        POOLING_HTTP_CLIENT_CONNECTION_MANAGER_MAP.put(this.nodeCode, cm);
     }
 
     public static void addStringEntity(RemoteReqContext req) {
@@ -149,13 +149,14 @@ public class ApacheRemoteHTTPClient implements RemoteNetClient {
     private static void addHttpHeader(RemoteReqContext req, HttpRequest httpRequest) {
         Map<String, String> commonHeader = req.get(AbstractHttpMappingLifeCycle.COMMON_HEADER);
         Map<String, String> headers = req.get(HTTP_HEADER_VALUE);
-        if (MapUtils.isNotEmpty(commonHeader))
-            commonHeader.forEach(httpRequest::setHeader);
-
+        Map<String, String> targetHeader = new HashMap<>();
         if (MapUtils.isNotEmpty(headers))
-            headers.forEach(httpRequest::setHeader);
-        httpRequest.addHeader("User-Agent","Remote HTTP Client on Apache, Java 8");
-        httpRequest.addHeader("Host", req.get(RemoteConstant.HOST));
+            headers.forEach(targetHeader::putIfAbsent);
+        if (MapUtils.isNotEmpty(commonHeader))
+            commonHeader.forEach(targetHeader::putIfAbsent);
+
+        targetHeader.forEach(httpRequest::addHeader);
+
     }
 
     public static String parseHttpUrl(RemoteReqContext req) {
@@ -249,10 +250,10 @@ public class ApacheRemoteHTTPClient implements RemoteNetClient {
                 Header[] httpHeaders = response.getAllHeaders();
                 final Map<String, String> headerMap;
                 Object headersObj = res.getHeaders();
-                if (Objects.isNull(headersObj)){
+                if (Objects.isNull(headersObj)) {
                     headerMap = new HashMap<>();
                 } else {
-                    if (headersObj instanceof Map){
+                    if (headersObj instanceof Map) {
                         //noinspection unchecked
                         headerMap = (Map<String, String>) headersObj;
                     } else {
@@ -263,6 +264,10 @@ public class ApacheRemoteHTTPClient implements RemoteNetClient {
 
                 if (ArrayUtils.isNotEmpty(httpHeaders))
                     Arrays.stream(httpHeaders).forEach(item -> headerMap.putIfAbsent(item.getName(), item.getValue()));
+                String lengthStr = headerMap.entrySet().stream()
+                        .filter(item -> StringUtils.equalsIgnoreCase(item.getKey(), "content-length"))
+                        .map(Map.Entry::getValue).findAny()
+                        .orElse(StringUtils.EMPTY);
 
                 res.setHeaders(headerMap);
                 ProtocolVersion protocolVersion = response.getProtocolVersion();
@@ -271,6 +276,8 @@ public class ApacheRemoteHTTPClient implements RemoteNetClient {
 
                 if (Objects.nonNull(resEntity)) {
                     byte[] byteArray = IOUtils.toByteArray(resEntity.getContent());
+                    if (StringUtils.isBlank(lengthStr))
+                        headerMap.put("Content-Length", String.valueOf(ArrayUtils.getLength(byteArray)));
                     res.setTempData(byteArray);
                 }
             } catch (IOException e) {

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- package io.github.microapplet.remote.http.annotation.lifecycle;
+package io.github.microapplet.remote.http.annotation.lifecycle;
 
 import io.github.microapplet.remote.context.RemoteMethodConfig;
 import io.github.microapplet.remote.context.RemoteReqContext;
@@ -31,61 +31,65 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.net.ssl.SSLContext;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
 
- /**
-  * HTTP 协议基础处理器
-  *
-  * @author Copyright &copy; <a href="mailto:asialjim@hotmail.com">Asial Jim</a>   Co., LTD
-  * @version 4.0
-  * @since 2023/7/10, &nbsp;&nbsp; <em>version:4.0</em>, &nbsp;&nbsp; <em>java version:8</em>
-  */
- public abstract class AbstractHttpProcessLifeCycle implements Before, Invoke, After {
-     private static final Logger log = LoggerFactory.getLogger(AbstractHttpProcessLifeCycle.class);
+/**
+ * HTTP 协议基础处理器
+ *
+ * @author Copyright &copy; <a href="mailto:asialjim@hotmail.com">Asial Jim</a>   Co., LTD
+ * @version 4.0
+ * @since 2023/7/10, &nbsp;&nbsp; <em>version:4.0</em>, &nbsp;&nbsp; <em>java version:8</em>
+ */
+public abstract class AbstractHttpProcessLifeCycle implements Before, Invoke, After {
+    private static final Logger log = LoggerFactory.getLogger(AbstractHttpProcessLifeCycle.class);
 
-     @Override
-     public int order() {
-         return Integer.MAX_VALUE;
-     }
+    @Override
+    public int order() {
+        return Integer.MAX_VALUE;
+    }
 
-     @Override
-     public void invoke(Object data, RemoteMethodConfig methodConfig, RemoteReqContext req, RemoteResContext res, Object[] args) {
-         String bodyStr = Optional.ofNullable(req.get(BaseObjectMapperRequestBodyLifeCycle.STRING_BODY_KEY)).orElse(StringUtils.EMPTY);
-         String url = req.get(AbstractHttpMappingLifeCycle.HTTP_REQUEST_URI);
-         Map<String, String> headers = req.get(AbstractHttpHeaderLifeCycle.HTTP_HEADER_VALUE);
-         log.info("\r\n\tRemote NET Req Line >>> Client:{} >>> {} {}://{}:{}{}", methodConfig.getRemoteName(), req.get(AbstractHttpMappingLifeCycle.HTTP_METHOD_KEY), req.get(RemoteConstant.SCHEMA), req.get(RemoteConstant.HOST), req.get(RemoteConstant.PORT), url);
-         log.info("\r\n\tRemote NET Req Head >>> Client:{} >>> {}", methodConfig.getRemoteName(), headers);
-         AbstractFormDataLifeCycle.callFromLog(req);
-         Boolean fromDataRequest = req.get(AbstractFormDataLifeCycle.FORM_DATA_REQUEST);
-         if (StringUtils.isNotBlank(bodyStr) && !Boolean.TRUE.equals(fromDataRequest))
-             log.info("\r\n\tRemote NET Req Body >>> Client:{} >>> {}", methodConfig.getRemoteName(), bodyStr);
-         SSLContext sslContext = req.get(Ssl.SslLifeCycle.SSL_CONTEXT_GENERIC_KEY);
-         if (Objects.nonNull(sslContext))
-             log.info("\r\n\tRemote NET Req Ssl  >>> Client:{} >>> {}", methodConfig.getRemoteName(), sslContext);
+    @Override
+    public void invoke(Object data, RemoteMethodConfig methodConfig, RemoteReqContext req, RemoteResContext res, Object[] args) {
+        String bodyStr = Optional.ofNullable(req.get(BaseObjectMapperRequestBodyLifeCycle.STRING_BODY_KEY)).orElse(StringUtils.EMPTY);
+        String url = req.get(AbstractHttpMappingLifeCycle.HTTP_REQUEST_URI);
+        Map<String, String> headers = Optional.ofNullable(req.get(AbstractHttpHeaderLifeCycle.HTTP_HEADER_VALUE)).orElseGet(HashMap::new);
+        headers.putIfAbsent("User-Agent", "Remote HTTP Client on Apache, Java 8");
+        headers.putIfAbsent("Host", req.get(RemoteConstant.HOST));
+        req.put(AbstractHttpHeaderLifeCycle.HTTP_HEADER_VALUE, headers);
+
+        log.info("\r\n\tRemote NET Req Line >>> Client:{} >>> {} {}://{}:{}{}", methodConfig.getRemoteName(), req.get(AbstractHttpMappingLifeCycle.HTTP_METHOD_KEY), req.get(RemoteConstant.SCHEMA), req.get(RemoteConstant.HOST), req.get(RemoteConstant.PORT), url);
+        log.info("\r\n\tRemote NET Req Head >>> Client:{} >>> {}", methodConfig.getRemoteName(), headers);
+        AbstractFormDataLifeCycle.callFromLog(req);
+        Boolean fromDataRequest = req.get(AbstractFormDataLifeCycle.FORM_DATA_REQUEST);
+        if (StringUtils.isNotBlank(bodyStr) && !Boolean.TRUE.equals(fromDataRequest))
+            log.info("\r\n\tRemote NET Req Body >>> Client:{} >>> {}", methodConfig.getRemoteName(), bodyStr);
+        SSLContext sslContext = req.get(Ssl.SslLifeCycle.SSL_CONTEXT_GENERIC_KEY);
+        if (Objects.nonNull(sslContext))
+            log.info("\r\n\tRemote NET Req Ssl  >>> Client:{} >>> {}", methodConfig.getRemoteName(), sslContext);
+
+        RemoteNetClient client = req.get(RemoteNetClient.REMOTE_NET_CLIENT_GENERIC_KEY);
+        if (Objects.nonNull(client))
+            // 发送请求
+            client.send(req, res);
+    }
+
+    @Override
+    public void after(Object data, RemoteMethodConfig methodConfig, RemoteReqContext req, RemoteResContext res, Object[] args) {
+        //noinspection unchecked
+        Map<String, String> headers = (Map<String, String>) res.getHeaders();
+        if (MapUtils.isEmpty(headers))
+            return;
+
+        Object resData = res.getData();
+        if (!(resData instanceof ResWithHeader withHeader))
+            return;
+
+        headers.forEach(withHeader::addHeader);
 
 
-         RemoteNetClient client = req.get(RemoteNetClient.REMOTE_NET_CLIENT_GENERIC_KEY);
-         if (Objects.nonNull(client))
-             // 发送请求
-             client.send(req, res);
-     }
-
-     @Override
-     public void after(Object data, RemoteMethodConfig methodConfig, RemoteReqContext req, RemoteResContext res, Object[] args) {
-         //noinspection unchecked
-         Map<String, String> headers = (Map<String, String>) res.getHeaders();
-         if (MapUtils.isEmpty(headers))
-             return;
-
-         Object resData = res.getData();
-         if (!(resData instanceof ResWithHeader withHeader))
-             return;
-
-         headers.forEach(withHeader::addHeader);
-
-
-     }
- }
+    }
+}
