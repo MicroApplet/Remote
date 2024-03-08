@@ -16,19 +16,15 @@
 package io.github.microapplet.remote.http.annotation;
 
 import io.github.microapplet.remote.annotation.RemoteSubProperty;
-import io.github.microapplet.remote.context.RemoteMethodConfig;
-import io.github.microapplet.remote.context.RemoteReqContext;
-import io.github.microapplet.remote.context.RemoteResContext;
+import io.github.microapplet.remote.context.*;
 import io.github.microapplet.remote.http.annotation.body.FormData;
-import io.github.microapplet.remote.http.annotation.lifecycle.UploadAttributeWrapper;
-import io.github.microapplet.remote.http.annotation.lifecycle.UploadByteArrayWrapper;
+import io.github.microapplet.remote.http.annotation.lifecycle.*;
 import io.github.microapplet.remote.http.client.ApacheRemoteHTTPClient;
-import org.apache.commons.collections4.CollectionUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
 
-import java.util.List;
+import java.util.*;
 
 /**
  * 基于Apache 的HTTP 上传文件处理器
@@ -45,23 +41,14 @@ public class ApacheFormDataLifeCycle extends FormData.FormDataLifeCycle {
 
     @Override
     protected void doBefore(Object data, RemoteMethodConfig methodConfig, RemoteReqContext req, RemoteResContext res, Object[] args) {
-        List<UploadAttributeWrapper> attributes = req.get(UPLOAD_ATTRIBUTE_LIST);
-        List<UploadByteArrayWrapper> contents = req.get(UPLOAD_CONTENT_LIST);
+        List<UploadAttributeWrapper> attributes = Optional.ofNullable(req.get(UPLOAD_ATTRIBUTE_LIST)).orElseGet(ArrayList::new);
+        List<UploadByteArrayWrapper> contents = Optional.ofNullable(req.get(UPLOAD_CONTENT_LIST)).orElseGet(ArrayList::new);
         final MultipartEntityBuilder builder = MultipartEntityBuilder.create();
 
-        if (CollectionUtils.isNotEmpty(attributes)) {
-            for (UploadAttributeWrapper attribute : attributes) {
-                builder.addTextBody(attribute.getName(), attribute.getValue(), ContentType.parse(attribute.getContentType()));
-            }
-        }
-
-        if (CollectionUtils.isNotEmpty(contents)) {
-            for (UploadByteArrayWrapper content : contents) {
-                builder.addBinaryBody(content.getName(), content.getContent(), ContentType.parse(content.getContentType()), content.getFileName());
-            }
-        }
+        attributes.forEach(item -> builder.addTextBody(item.getName(), item.getValue(), ContentType.parse(item.getContentType())));
+        contents.forEach(item -> builder.addBinaryBody(item.getName(), item.getContent(), ContentType.parse(item.getContentType()), item.getFileName()));
 
         HttpEntity entity = builder.build();
-        req.put(ApacheRemoteHTTPClient.HTTP_ENTITY_GENERIC_KEY,entity);
+        req.put(ApacheRemoteHTTPClient.HTTP_ENTITY_GENERIC_KEY, entity);
     }
 }

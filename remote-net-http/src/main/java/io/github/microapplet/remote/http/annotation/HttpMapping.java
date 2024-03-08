@@ -15,23 +15,15 @@
  */
 package io.github.microapplet.remote.http.annotation;
 
-
 import io.github.microapplet.remote.annotation.RemoteLifeCycle;
-import io.github.microapplet.remote.context.RemoteMethodConfig;
-import io.github.microapplet.remote.context.RemoteMethodParameter;
-import io.github.microapplet.remote.context.RemoteReqContext;
-import io.github.microapplet.remote.context.RemoteResContext;
-import io.github.microapplet.remote.http.annotation.lifecycle.AbstractHttpMappingLifeCycle;
-import io.github.microapplet.remote.http.annotation.lifecycle.AbstractHttpProcessLifeCycle;
+import io.github.microapplet.remote.context.*;
+import io.github.microapplet.remote.http.annotation.lifecycle.*;
 import io.github.microapplet.remote.net.annotation.ServerLifeCycle;
 import io.github.microapplet.remote.net.client.RemoteNetClient;
 import io.github.microapplet.remote.net.context.RemoteNetNodeKey;
-import org.apache.commons.lang3.ArrayUtils;
 
 import java.lang.annotation.*;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * HTTP 请求
@@ -47,12 +39,25 @@ import java.util.Objects;
 @RemoteLifeCycle({HttpMapping.HttpMappingLifeCycle.class, HttpMapping.HttpProcessLifeCycle.class})
 public @interface HttpMapping {
 
+    /**
+     * HTTP 方法
+     * @since 2024/3/8
+     */
     String method();
 
+    /**
+     * HTTP url 链接，  url-path 格式如下：  <a href="https://www.baidu.com/ab/cd/#{aaa}/${dddd}">...</a>
+     */
     String uri();
 
+    /**
+     * queries 常量查询参数
+     */
     HttpQuery[] queries() default {};
 
+    /**
+     * headers 常量请求头
+     */
     HttpHeader[] headers() default {};
 
     final class HttpMappingLifeCycle extends AbstractHttpMappingLifeCycle implements RemoteLifeCycle.LifeCycleHandler<HttpMapping> {
@@ -65,30 +70,22 @@ public @interface HttpMapping {
             // 配置 请求链接
             methodConfig.config(HTTP_REQUEST_URI, annotation.uri());
 
-            HttpHeader[] headers = annotation.headers();
-            HttpQuery[] queries = annotation.queries();
+            HttpHeader[] headers = Optional.ofNullable(annotation.headers()).orElseGet(() -> new HttpHeader[0]);
+            HttpQuery[] queries = Optional.ofNullable(annotation.queries()).orElseGet(() -> new HttpQuery[0]);
 
             // 设置 通用 请求头
-            if (ArrayUtils.isNotEmpty(headers)) {
-                Map<String, String> headerMap = new HashMap<>();
-                for (HttpHeader header : headers) {
-                    headerMap.put(header.name(), header.value());
-                }
-                methodConfig.config(COMMON_HEADER, headerMap);
-            }
+            Map<String, String> headerMap = new HashMap<>();
+            Arrays.stream(headers).forEach(header -> headerMap.put(header.name(), header.value()));
+            methodConfig.config(COMMON_HEADER, headerMap);
 
             // 设置 通用 查询参数
-            if (ArrayUtils.isNotEmpty(queries)) {
-                Map<String, String> queryMap = new HashMap<>();
-                for (HttpQuery query : queries) {
-                    queryMap.put(query.name(), query.value());
-                }
-                methodConfig.config(COMMON_QUERY, queryMap);
-            }
+            Map<String, String> queryMap = new HashMap<>();
+            Arrays.stream(queries).forEach(query -> queryMap.put(query.name(), query.value()));
+            methodConfig.config(COMMON_QUERY, queryMap);
         }
     }
 
-    abstract class HttpProcessLifeCycle extends AbstractHttpProcessLifeCycle implements RemoteLifeCycle.LifeCycleHandler<HttpMapping>{
+    abstract class HttpProcessLifeCycle extends AbstractHttpProcessLifeCycle implements RemoteLifeCycle.LifeCycleHandler<HttpMapping> {
         @Override
         public void doInit(RemoteMethodConfig methodConfig, RemoteMethodParameter methodParameter, HttpMapping annotation) {
         }
@@ -98,22 +95,22 @@ public @interface HttpMapping {
             doBefore(data, methodConfig, req, res, args);
             RemoteNetNodeKey nodeKey = req.get(ServerLifeCycle.NET_NODE_KEY_GENERIC_KEY);
             RemoteNetClient client = RemoteNetClient.REMOTE_NET_NODE_KEY_REMOTE_NET_CLIENT_MAP.get(nodeKey);
-            if (Objects.isNull(client)){
+            if (Objects.isNull(client)) {
                 client = newRemoteNetClient(nodeKey);
-                RemoteNetClient.REMOTE_NET_NODE_KEY_REMOTE_NET_CLIENT_MAP.put(nodeKey,client);
+                RemoteNetClient.REMOTE_NET_NODE_KEY_REMOTE_NET_CLIENT_MAP.put(nodeKey, client);
             }
             req.put(RemoteNetClient.REMOTE_NET_CLIENT_GENERIC_KEY, client);
             afterBefore(data, methodConfig, req, res, args);
         }
 
-        @SuppressWarnings("unused")
-        protected void doBefore(Object data, RemoteMethodConfig methodConfig, RemoteReqContext req, RemoteResContext res, Object[] args){
+        protected void doBefore(Object data, RemoteMethodConfig methodConfig, RemoteReqContext req, RemoteResContext res, Object[] args) {
             // do nothing here
         }
-        @SuppressWarnings("unused")
-        protected void afterBefore(Object data, RemoteMethodConfig methodConfig, RemoteReqContext req, RemoteResContext res, Object[] args){
+
+        protected void afterBefore(Object data, RemoteMethodConfig methodConfig, RemoteReqContext req, RemoteResContext res, Object[] args) {
             // do nothing here
         }
+
         protected abstract RemoteNetClient newRemoteNetClient(RemoteNetNodeKey nodeKey);
     }
 }
