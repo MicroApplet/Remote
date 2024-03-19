@@ -21,7 +21,6 @@ import io.github.microapplet.remote.net.event.ApiServerEnvironmentLockedEvent;
 import io.github.microapplet.remote.net.repository.mapper.ApiServerInfoMapper;
 import io.github.microapplet.remote.net.repository.mapper.ApiServerInfoPO;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import jakarta.annotation.Resource;
 import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.ApplicationContext;
@@ -29,6 +28,7 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
 import java.time.Duration;
 import java.util.Calendar;
 import java.util.Objects;

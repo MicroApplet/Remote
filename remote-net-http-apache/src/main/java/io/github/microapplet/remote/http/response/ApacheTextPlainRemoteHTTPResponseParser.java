@@ -29,7 +29,7 @@ import java.util.Enumeration;
 import java.util.Map;
 import java.util.Objects;
 
-@RemoteSubProperty("apache.http,https")
+@RemoteSubProperty("apache")
 public final class ApacheTextPlainRemoteHTTPResponseParser extends TextPlainRemoteNetResponseParser {
     @Override
     protected Charset charset(RemoteResContext resContext) {

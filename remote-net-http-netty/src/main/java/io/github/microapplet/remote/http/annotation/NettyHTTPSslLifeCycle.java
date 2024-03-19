@@ -21,7 +21,7 @@ import io.github.microapplet.remote.annotation.RemoteSubProperty;
 import io.github.microapplet.remote.net.annotation.Ssl;
 
 @Primary
-@RemoteSubProperty("netty.http")
+@RemoteSubProperty("netty")
 public final class NettyHTTPSslLifeCycle extends Ssl.SslLifeCycle {
 
     @Override

@@ -37,9 +37,9 @@ import java.util.Objects;
      public void before(Object data, RemoteMethodConfig methodConfig, RemoteReqContext req, RemoteResContext res, Object[] args) {
          RemoteMethodParameter parameter = methodConfig.config(SSL_PARAMETER_KEY);
          Object body = args[parameter.getIndex()];
-         if (!(body instanceof SSLContext sslContext))
+         if (!(body instanceof SSLContext))
              return;
-
+         SSLContext sslContext = (SSLContext) body;
          req.put(SSL_CONTEXT_GENERIC_KEY, sslContext);
          RemoteNetNodeKey nodeKey = req.get(ServerLifeCycle.NET_NODE_KEY_GENERIC_KEY);
          if (Objects.nonNull(nodeKey) && Objects.isNull(nodeKey.getSslContext()))

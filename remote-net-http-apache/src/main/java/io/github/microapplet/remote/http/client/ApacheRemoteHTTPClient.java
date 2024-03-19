@@ -122,14 +122,12 @@ public class ApacheRemoteHTTPClient implements RemoteNetClient {
     }
 
     public static void addOctetStreamEntity(RemoteReqContext req) {
-        Map<String, String> header = req.get(HTTP_HEADER_VALUE);
-        String contentType = Optional.ofNullable(header)
-                .map(Map::entrySet)
-                .stream()
-                .flatMap(Collection::stream)
+        Map<String, String> header = Optional.ofNullable(req.get(HTTP_HEADER_VALUE)).orElseGet(HashMap::new);
+        String contentType = header.entrySet().stream()
                 .filter(entry -> StringUtils.equalsIgnoreCase("content-type", entry.getKey()))
                 .map(Map.Entry::getValue)
-                .findFirst().orElse("application/octet-stream");
+                .findAny().orElse("application/octet-stream");
+
         byte[] bytes = Optional.ofNullable(req.get(AbstractOctetStreamBodyLifeCycle.OCTET_STREAM_VALUE)).orElse(new byte[0]);
         ByteArrayEntity entity = new ByteArrayEntity(bytes, ContentType.create(contentType));
         req.put(ApacheRemoteHTTPClient.HTTP_ENTITY_GENERIC_KEY, entity);
@@ -211,8 +209,10 @@ public class ApacheRemoteHTTPClient implements RemoteNetClient {
             CredentialsProvider credsProvider = new BasicCredentialsProvider();
             credsProvider.setCredentials(authScope, credentials);
 
+            //noinspection resource
             httpclient = HttpClients.custom().setConnectionManager(cm).setDefaultCredentialsProvider(credsProvider).build();
         } else {
+            //noinspection resource
             httpclient = HttpClients.custom().setConnectionManager(cm).build();
         }
 

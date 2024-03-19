@@ -33,7 +33,7 @@ import java.util.*;
  * @version 3.0.0
  * @since 2023/10/10, &nbsp;&nbsp; <em>version:3.0.0</em>,  &nbsp;&nbsp;  <em>java version:8</em>
  */
-@RemoteSubProperty("apache.http,https")
+@RemoteSubProperty("apache")
 public class ApacheFormDataLifeCycle extends FormData.FormDataLifeCycle {
     @Override
     public void invoke(Object data, RemoteMethodConfig methodConfig, RemoteReqContext req, RemoteResContext res, Object[] args) {

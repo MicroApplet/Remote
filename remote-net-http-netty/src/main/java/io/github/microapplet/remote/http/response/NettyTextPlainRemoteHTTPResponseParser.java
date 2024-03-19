@@ -31,7 +31,7 @@ import java.util.Map;
 import java.util.Objects;
 
 @Primary
-@RemoteSubProperty("netty.http")
+@RemoteSubProperty("netty")
 public final class NettyTextPlainRemoteHTTPResponseParser extends TextPlainRemoteNetResponseParser {
     @Override
     protected Charset charset(RemoteResContext resContext) {

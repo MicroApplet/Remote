@@ -33,8 +33,6 @@ import static io.github.microapplet.remote.http.annotation.lifecycle.AbstractHtt
  public abstract class AbstractHttpUriValueLifeCycle implements Before {
      public static final GenericKey<Map<String, RemoteMethodParameter>> HTTP_URI_CONFIG = GenericKey.keyOf("HTTP_URI_CONFIG_VALUE");
 
-
-
      @Override
      public int order() {
          return Integer.MIN_VALUE;

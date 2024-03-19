@@ -66,7 +66,7 @@ public abstract class BufferRemoteNetResponseParser extends BaseRemoteNetRespons
         }
 
         Optional<Constructor<?>> opt = Arrays.stream(returnClass.getConstructors()).filter(item -> item.getParameters().length == 0).findFirst();
-        if (opt.isEmpty()) {
+        if (!opt.isPresent()){
             resContext.setCause(new IllegalArgumentException("Remote Client Return Type: " + methodConfig.getRemoteName() + " must has Default Constructor"));
             return;
         }

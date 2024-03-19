@@ -27,7 +27,7 @@ import javax.activation.MimeTypeParseException;
 import java.util.Map;
 
 @Primary
-@RemoteSubProperty("netty.http")
+@RemoteSubProperty("netty")
 public final class NettyBufferRemoteHTTPResponseParser extends BufferRemoteNetResponseParser {
 
     @Override
