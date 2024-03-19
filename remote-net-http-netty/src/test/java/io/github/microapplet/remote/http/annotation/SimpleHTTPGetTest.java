@@ -22,7 +22,6 @@ import lombok.Data;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -86,7 +85,6 @@ public class SimpleHTTPGetTest {
 
     @Data
     public static class WeChatAccessTokenRes implements Serializable {
-        @Serial
         private static final long serialVersionUID = -7521105708674266943L;
         private Integer errcode;
         private String errmsg;
