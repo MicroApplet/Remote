@@ -72,7 +72,6 @@
         <tag>HEAD</tag>
     </scm>
 
-
     <modules>
         <module>remote-core</module>
         <module>remote-spring</module>
@@ -180,7 +179,6 @@
                     <autoReleaseAfterClose>true</autoReleaseAfterClose>
                 </configuration>
             </plugin>
-
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
