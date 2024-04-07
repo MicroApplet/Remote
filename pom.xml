@@ -81,8 +81,9 @@
         <module>remote-net-http-apache</module>
         <module>remote-net-http-netty</module>
         <module>remote-net-proxy</module>
-        <module>remote-net-repository</module>
+        <module>remote-net-repository-mybatis-plus</module>
         <module>remote-zen-pom</module>
+        <module>remote-net-repository-mybatis-flex</module>
     </modules>
 
     <properties>
@@ -90,6 +91,7 @@
         <maven.compiler.target>8</maven.compiler.target>
         <spring-boot.version>2.7.18</spring-boot.version>
         <mybatis-plus.version>3.5.5</mybatis-plus.version>
+        <mybatis-flex.version>1.8.6</mybatis-flex.version>
     </properties>
 
     <dependencyManagement>
@@ -105,6 +107,13 @@
                 <groupId>com.baomidou</groupId>
                 <artifactId>mybatis-plus-bom</artifactId>
                 <version>${mybatis-plus.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.mybatis-flex</groupId>
+                <artifactId>mybatis-flex-dependencies</artifactId>
+                <version>${mybatis-flex.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>

@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2023 <a href="mailto:asialjim@hotmail.com">Asial Jim</a>
+ * Copyright 2014-2024 <a href="mailto:asialjim@hotmail.com">Asial Jim</a>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,11 +16,12 @@
 
 package io.github.microapplet.remote.net.repository;
 
+import com.mybatisflex.core.query.QueryWrapper;
+import com.mybatisflex.core.util.LambdaGetter;
 import io.github.microapplet.remote.config.RemoteLocalEnvironment;
 import io.github.microapplet.remote.net.event.ApiServerEnvironmentLockedEvent;
 import io.github.microapplet.remote.net.repository.mapper.ApiServerInfoMapper;
 import io.github.microapplet.remote.net.repository.mapper.ApiServerInfoPO;
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.ApplicationContext;
@@ -35,14 +36,15 @@ import java.util.Objects;
 import java.util.Optional;
 
 /**
- * Remote  网络仓库管理
+ * 基于 MyBatis Flex 的网络仓库服务
  *
- * @author Copyright © <a href="mailto:asialjim@hotmail.com">Asial Jim</a>   Co., LTD
+ * @author <a href="mailto:asialjim@hotmail.com">Asial Jim</a>
  * @version 3.0.0
- * @since 2023/10/18, &nbsp;&nbsp; <em>version:3.0.0</em>,  &nbsp;&nbsp;  <em>java version:8</em>
+ * @since 2024 04 07, &nbsp;&nbsp; <em>version:3.0.0</em>
  */
+@Setter
 @Component
-public class ApiServerRepositoryImpl implements ApiServerRepository, ApplicationContextAware {
+public class ApiServerMyBatisFlexRepository implements ApiServerRepository, ApplicationContextAware {
     private static final String PREFIX = "RMT:NET:%s";
     private static final String TEMPLATE = "%s:%s:%s:%s:%s";
     @Resource
@@ -162,9 +164,13 @@ public class ApiServerRepositoryImpl implements ApiServerRepository, Application
             return apiServerInfoOpt.get();
 
         // 从数据库中获取数据
-        po = mapper.selectOne(new LambdaQueryWrapper<ApiServerInfoPO>().eq(ApiServerInfoPO::getSup, supplier).eq(ApiServerInfoPO::getSvr, namespace)
-                .eq(ApiServerInfoPO::getEnvi, env).eq(ApiServerInfoPO::getLEnvi, localEnv)
-                .eq(ApiServerInfoPO::getArc, arch));
+        QueryWrapper wrapper = new QueryWrapper();
+        wrapper.eq((LambdaGetter<ApiServerInfoPO>) ApiServerInfoPO::getSup, supplier);
+        wrapper.eq((LambdaGetter<ApiServerInfoPO>) ApiServerInfoPO::getSvr, namespace);
+        wrapper.eq((LambdaGetter<ApiServerInfoPO>) ApiServerInfoPO::getEnvi, env);
+        wrapper.eq((LambdaGetter<ApiServerInfoPO>) ApiServerInfoPO::getLEnvi, localEnv);
+        wrapper.eq((LambdaGetter<ApiServerInfoPO>) ApiServerInfoPO::getArc, arch);
+        po = mapper.selectOneByQuery(wrapper);
 
         apiServerInfoOpt = Optional.ofNullable(po).map(ApiServerInfoPO::apiServerInfo);
 

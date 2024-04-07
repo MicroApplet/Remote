@@ -24,12 +24,12 @@ import org.springframework.context.annotation.Configuration;
 /**
  * 网络仓库包
  *
- * @author Copyright © <a href="mailto:asialjim@hotmail.com">Asial Jim</a>   Co., LTD
+ * @author <a href="mailto:asialjim@hotmail.com">Asial Jim</a>
  * @version 3.0.0
- * @since 2023/10/18, &nbsp;&nbsp; <em>version:3.0.0</em>,  &nbsp;&nbsp;  <em>java version:8</em>
+ * @since 2024 04 07, &nbsp;&nbsp; <em>version:3.0.0</em>
  */
 @Configuration
 @ComponentScan
 @MapperScan(basePackageClasses = ApiServerInfoMapper.class)
-public class RemoteNetRepositoryScanner {
+public class RemoteNetRepositoryMyBatisFlexScanner {
 }

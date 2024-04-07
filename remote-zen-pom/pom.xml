@@ -65,7 +65,7 @@
             </dependency>
             <dependency>
                 <groupId>io.github.microapplet</groupId>
-                <artifactId>remote-net-repository</artifactId>
+                <artifactId>remote-net-repository-mybatis-plus</artifactId>
                 <version>Java8-1.0.1-SNAPSHOT</version>
             </dependency>
             <dependency>
