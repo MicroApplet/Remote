@@ -181,7 +181,7 @@ public class RemoteMethodConfig implements Cloneable {
             if (Objects.isNull(handler))
                 continue;
 
-            if (log.isDebugEnabled()) log.debug("生命周期：{} 初始化开始", handler);
+            if (log.isDebugEnabled()) log.debug("LifeCycle：{} Init Start...", handler);
 
             //noinspection unchecked
             handler.init(this, parameter, annotation);
