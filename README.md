@@ -23,7 +23,7 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>io.gitee.asialjim</groupId>
+                <groupId>io.github.microapplet</groupId>
                 <artifactId>remote-zen-pom</artifactId>
                 <version>${remote.version}</version>
                 <type>pom</type>
@@ -35,7 +35,7 @@
     <!--按需要引入相关库如：构建 http 客户端引入-->
     <dependencies>
         <dependency>
-            <groupId>io.gitee.asialjim</groupId>
+            <groupId>io.github.microapplet</groupId>
             <artifactId>remote-net-http</artifactId>
         </dependency>
     </dependencies>

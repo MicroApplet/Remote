@@ -15,7 +15,7 @@
  */
 package io.github.microapplet.remote.net.repository.mapper;
 
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.mybatisflex.core.BaseMapper;
 import org.springframework.stereotype.Repository;
 
 /**

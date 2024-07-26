@@ -16,11 +16,12 @@
 
 package io.github.microapplet.remote.net.repository;
 
+import com.mybatisflex.core.query.QueryWrapper;
+import com.mybatisflex.core.query.QueryWrapperAdapter;
 import io.github.microapplet.remote.config.RemoteLocalEnvironment;
 import io.github.microapplet.remote.net.event.ApiServerEnvironmentLockedEvent;
 import io.github.microapplet.remote.net.repository.mapper.ApiServerInfoMapper;
 import io.github.microapplet.remote.net.repository.mapper.ApiServerInfoPO;
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import jakarta.annotation.Resource;
 import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
@@ -160,12 +161,15 @@ public class ApiServerRepositoryImpl implements ApiServerRepository, Application
         // 缓存中有数据, 直接返回
         if (apiServerInfoOpt.isPresent())
             return apiServerInfoOpt.get();
+        QueryWrapper wrapper = QueryWrapperAdapter.create()
+                .where(ApiServerInfoPO::getSup).eq(supplier)
+                .where(ApiServerInfoPO::getSvr).eq(namespace)
+                .where(ApiServerInfoPO::getEnvi).eq(env)
+                .where(ApiServerInfoPO::getLEnvi).eq(localEnv)
+                .where(ApiServerInfoPO::getArc).eq(arch);
 
         // 从数据库中获取数据
-        po = mapper.selectOne(new LambdaQueryWrapper<ApiServerInfoPO>().eq(ApiServerInfoPO::getSup, supplier).eq(ApiServerInfoPO::getSvr, namespace)
-                .eq(ApiServerInfoPO::getEnvi, env).eq(ApiServerInfoPO::getLEnvi, localEnv)
-                .eq(ApiServerInfoPO::getArc, arch));
-
+        po = mapper.selectOneByQuery(wrapper);
         apiServerInfoOpt = Optional.ofNullable(po).map(ApiServerInfoPO::apiServerInfo);
 
         // 数据库中存在有效数据

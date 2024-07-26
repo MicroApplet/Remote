@@ -15,25 +15,31 @@
  */
 package io.github.microapplet.remote.net.repository.mapper;
 
+import com.mybatisflex.annotation.Column;
+import com.mybatisflex.annotation.Id;
+import com.mybatisflex.annotation.Table;
 import io.github.microapplet.remote.net.repository.ApiServerInfo;
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.Serial;
 import java.io.Serializable;
 
+/**
+ * API 服务器配置信息
+ *
+ * @author <a href="mailto:asialjim@hotmail.com">Asial Jim</a>
+ * @version 1.0.0
+ * @since 2024 07 25, &nbsp;&nbsp; <em>version:1.0.0</em>
+ */
 @Data
-@TableName("t_rmt_net_svr")
+@Table("api_server_info")
 public class ApiServerInfoPO implements Serializable {
 
     @Serial
     private static final long serialVersionUID = -1615501437940313064L;
 
-    @TableId(type = IdType.ASSIGN_ID)
+    @Id
     private String id;
 
     /**
@@ -54,7 +60,7 @@ public class ApiServerInfoPO implements Serializable {
     /**
      * 详细描述信息
      */
-    @TableField("r_desc")
+    @Column("r_desc")
     private String description;
 
     /**
@@ -65,40 +71,40 @@ public class ApiServerInfoPO implements Serializable {
     /**
      * 主机名
      */
-    @TableField("r_host")
+    @Column("r_host")
     private String host;
 
     /**
      * 通讯端口
      */
-    @TableField("r_port")
+    @Column("r_port")
     private Integer port;
 
     /**
      * 代理主机名
      */
-    @TableField("p_host")
+    @Column("p_host")
     private String proxyHost;
 
     /**
      * 代理端口
      */
-    @TableField("p_port")
+    @Column("p_port")
     private Integer proxyPort;
 
     /**
      * 超时时间，单位：毫秒
      */
-    @TableField("r_time")
+    @Column("r_time")
     private Integer rTime;
 
     /**
      * 字符集
      */
-    @TableField("r_char")
+    @Column("r_char")
     private String rChar;
 
-    @TableField("l_env")
+    @Column("l_env")
     private Integer lEnvi;
 
     private String arc;
