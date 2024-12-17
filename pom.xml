@@ -82,8 +82,8 @@
         <module>remote-net-http-netty</module>
         <module>remote-net-proxy</module>
         <module>remote-net-repository-mybatis-plus</module>
-        <module>remote-zen-pom</module>
         <module>remote-net-repository-mybatis-flex</module>
+        <module>remote-zen-pom</module>
     </modules>
 
     <properties>
