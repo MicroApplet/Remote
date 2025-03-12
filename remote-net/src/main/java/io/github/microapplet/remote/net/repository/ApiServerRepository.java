@@ -16,7 +16,7 @@
 package io.github.microapplet.remote.net.repository;
 
 import io.github.microapplet.remote.lifecycle.CallBack;
-import jakarta.annotation.PostConstruct;
+import javax.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
