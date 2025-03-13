@@ -54,23 +54,6 @@ public @interface FormData {
             List<RemoteMethodParameter> parameters = Optional.ofNullable(methodConfig.config(FORM_DATA_CONFIG)).orElseGet(ArrayList::new);
             parameters.add(methodParameter);
             methodConfig.config(FORM_DATA_CONFIG, parameters);
-
-            /*
-            Class<?> clazz = methodParameter.getClazz();
-            if (File.class.isAssignableFrom(clazz)
-                    || byte[].class.isAssignableFrom(clazz)
-                    || InputStream.class.isAssignableFrom(clazz)
-                    || MultipartFile.class.isAssignableFrom(clazz)
-                    || Map.class.isAssignableFrom(clazz)
-                    || List.class.isAssignableFrom(clazz)){
-
-                List<RemoteMethodParameter> parameters = Optional.ofNullable(methodConfig.config(FORM_DATA_CONFIG)).orElseGet(ArrayList::new);
-                parameters.add(methodParameter);
-                methodConfig.config(FORM_DATA_CONFIG, parameters);
-            }
-            else
-                throw new IllegalStateException("Form Data Request Type: " + methodParameter.getName() + " must be File, byte[], InputStream or Map");
-            */
         }
     }
 }
