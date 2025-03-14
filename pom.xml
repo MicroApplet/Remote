@@ -246,6 +246,8 @@
                     </execution>
                 </executions>
                 <configuration>
+                    <encoding>UTF-8</encoding> <!-- 关键配置 -->
+                    <docencoding>UTF-8</docencoding>
                     <additionalJOptions>
                         <additionalJOption>-Xdoclint:none</additionalJOption>
                     </additionalJOptions>
