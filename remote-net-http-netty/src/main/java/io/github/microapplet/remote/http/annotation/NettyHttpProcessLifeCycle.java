@@ -33,7 +33,7 @@ import io.github.microapplet.remote.net.context.RemoteNetNodeKey;
  * @since 2023/10/11, &nbsp;&nbsp; <em>version:3.0.0</em>,  &nbsp;&nbsp;  <em>java version:8</em>
  */
 @Primary
-@RemoteSubProperty("netty.http")
+@RemoteSubProperty("netty")
 public class NettyHttpProcessLifeCycle extends HttpMapping.HttpProcessLifeCycle {
     @Override
     public void doBefore(Object data, RemoteMethodConfig methodConfig, RemoteReqContext req, RemoteResContext res, Object[] args) {

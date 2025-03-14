@@ -50,8 +50,8 @@ public class RemoteMethodInvoker {
         if (StringUtils.isBlank(trace))
             trace = UUID.randomUUID().toString().substring(0,8);
         MDC.put("REQUEST_ID", trace);
-        var reqContext = new RemoteReqContext();
-        var resContext = new RemoteResContext();
+        RemoteReqContext reqContext = new RemoteReqContext();
+        RemoteResContext resContext = new RemoteResContext();
         Object[] copyArgs = Objects.isNull(args) ? new Object[0] : args.clone();
 
         RemoteHandlerContext handlerContext = this.methodConfig.getRemoteHandlerContext();

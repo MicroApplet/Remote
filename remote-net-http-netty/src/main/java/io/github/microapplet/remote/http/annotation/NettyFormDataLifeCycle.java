@@ -49,7 +49,7 @@ import java.util.*;
  */
 @Slf4j
 @Primary
-@RemoteSubProperty("netty.http")
+@RemoteSubProperty("netty")
 public class NettyFormDataLifeCycle extends FormData.FormDataLifeCycle {
     @Override
     public void invoke(Object data, RemoteMethodConfig methodConfig, RemoteReqContext req, RemoteResContext res, Object[] args) {

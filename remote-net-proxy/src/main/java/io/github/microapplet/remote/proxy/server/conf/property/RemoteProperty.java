@@ -20,7 +20,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
-import java.io.Serial;
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -40,7 +39,6 @@ public class RemoteProperty implements Serializable {
     public static final String PREFIX = "remote.proxy";
     public static final String ENABLE = "enable";
     private static final Logger log = LoggerFactory.getLogger(RemoteProperty.class);
-    @Serial
     private static final long serialVersionUID = 8814362388932400490L;
     private Boolean enable;
     private String boss;

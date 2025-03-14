@@ -85,11 +85,10 @@ public abstract class AbstractHttpProcessLifeCycle implements Before, Invoke, Af
             return;
 
         Object resData = res.getData();
-        if (!(resData instanceof ResWithHeader withHeader))
+        if (!(resData instanceof ResWithHeader))
             return;
 
+        ResWithHeader withHeader = (ResWithHeader) resData;
         headers.forEach(withHeader::addHeader);
-
-
     }
 }

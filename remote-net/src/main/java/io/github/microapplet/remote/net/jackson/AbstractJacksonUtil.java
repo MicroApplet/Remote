@@ -200,7 +200,7 @@ public abstract class AbstractJacksonUtil {
             return mapper.readValue(stringValue, javaType);
         } catch (IOException e) {
             try {
-                return mapper.readValue(stringValue, new TypeReference<>() {
+                return mapper.readValue(stringValue, new TypeReference<List<T>>() {
                 });
             } catch (IOException ex) {
                 return Collections.emptyList();

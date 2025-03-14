@@ -35,7 +35,6 @@ import java.util.stream.Collectors;
 @Getter
 public enum RemoteNetSchema {
     HTTP("HTTP","HTTPS","WSS"),
-    GXP("GXP","ECIF","KAYAK"),
     ;
     private final List<String> values;
     public static final CharSequence HTTP_STR = "HTTP";

@@ -26,7 +26,8 @@ public class RemoteFactoryBean<T> implements FactoryBean<T> {
     private Class<T> remoteInterface;
     @Override
     public T getObject() {
-        log.info("Create Remote Instance for: {}", remoteInterface.getName());
+        if (log.isDebugEnabled())
+            log.info("Create Remote Instance for: {}", remoteInterface.getName());
         return RemoteProxy.create(this.remoteInterface);
     }
 

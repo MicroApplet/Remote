@@ -57,9 +57,10 @@ public class RemoteBeanDefinitionRegistrar implements ImportBeanDefinitionRegist
     private void init(BeanDefinitionRegistry applicationContext) {
         if (init)
             return;
-        if (!(applicationContext instanceof DefaultListableBeanFactory beanFactory))
+        if (!(applicationContext instanceof DefaultListableBeanFactory))
             return;
 
+        DefaultListableBeanFactory beanFactory = (DefaultListableBeanFactory) applicationContext;
         Environment environment = beanFactory.getBean(Environment.class);
         String primaries = environment.getProperty("remote.local.primaries");
         RemoteLifeCycleHandlerFactory.primary(primaries);
@@ -89,7 +90,6 @@ public class RemoteBeanDefinitionRegistrar implements ImportBeanDefinitionRegist
                 for (Resource resource : resources) {
                     MetadataReader metadataReader = METADATA_READER_FACTORY.getMetadataReader(resource);
                     AnnotationMetadata annotationMetadata = metadataReader.getAnnotationMetadata();
-                    //noinspection ConstantValue
                     if (Objects.isNull(annotationMetadata))
                         continue;
                     if (annotationMetadata.isAnnotation())

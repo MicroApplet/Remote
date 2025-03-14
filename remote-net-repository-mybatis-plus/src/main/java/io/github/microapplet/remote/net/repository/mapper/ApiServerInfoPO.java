@@ -22,7 +22,6 @@ import io.github.microapplet.remote.net.repository.ApiServerInfo;
 import lombok.Data;
 import org.apache.commons.lang3.StringUtils;
 
-import java.io.Serial;
 import java.io.Serializable;
 
 /**
@@ -36,7 +35,6 @@ import java.io.Serializable;
 @Table("api_server_info")
 public class ApiServerInfoPO implements Serializable {
 
-    @Serial
     private static final long serialVersionUID = -1615501437940313064L;
 
     @Id

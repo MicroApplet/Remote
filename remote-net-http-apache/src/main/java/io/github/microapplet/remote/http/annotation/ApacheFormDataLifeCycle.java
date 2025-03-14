@@ -21,9 +21,12 @@ import io.github.microapplet.remote.http.annotation.body.FormData;
 import io.github.microapplet.remote.http.annotation.lifecycle.*;
 import io.github.microapplet.remote.http.client.ApacheRemoteHTTPClient;
 import org.apache.http.HttpEntity;
+import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 /**
@@ -33,7 +36,7 @@ import java.util.*;
  * @version 3.0.0
  * @since 2023/10/10, &nbsp;&nbsp; <em>version:3.0.0</em>,  &nbsp;&nbsp;  <em>java version:8</em>
  */
-@RemoteSubProperty("apache.http,https")
+@RemoteSubProperty("apache")
 public class ApacheFormDataLifeCycle extends FormData.FormDataLifeCycle {
     @Override
     public void invoke(Object data, RemoteMethodConfig methodConfig, RemoteReqContext req, RemoteResContext res, Object[] args) {
@@ -46,7 +49,14 @@ public class ApacheFormDataLifeCycle extends FormData.FormDataLifeCycle {
         final MultipartEntityBuilder builder = MultipartEntityBuilder.create();
 
         attributes.forEach(item -> builder.addTextBody(item.getName(), item.getValue(), ContentType.parse(item.getContentType())));
-        contents.forEach(item -> builder.addBinaryBody(item.getName(), item.getContent(), ContentType.parse(item.getContentType()), item.getFileName()));
+        contents.forEach(item -> {
+
+            String fileName = item.getFileName();
+            //noinspection deprecation
+            String encode = URLEncoder.encode(fileName);
+            builder.addBinaryBody(item.getName(),item.getContent(),ContentType.parse(item.getContentType()),encode);
+        });
+        //contents.forEach(item -> builder.addBinaryBody(item.getName(), item.getContent(), ContentType.parse(item.getContentType()), URLEncoder.encode(item.getFileName(), StandardCharsets.UTF_8.name()) item.getFileName()));
 
         HttpEntity entity = builder.build();
         req.put(ApacheRemoteHTTPClient.HTTP_ENTITY_GENERIC_KEY, entity);

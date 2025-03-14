@@ -45,7 +45,7 @@ public class RemoteNetResponseParserHolder {
         addParser(BufferRemoteNetResponseParser.class);
 
         addResponseParser(ApplicationJsonRemoteNetResponseParser.INSTANCE);
-        addResponseParser(new ApplicationXmlRemoteNetResponseParser());
+        addResponseParser(ApplicationXmlRemoteNetResponseParser.INSTANCE);
     }
 
     static void addParser(Class<? extends RemoteNetResponseParser> clazz) {
@@ -54,7 +54,7 @@ public class RemoteNetResponseParserHolder {
             Constructor<? extends RemoteNetResponseParser>[] declaredConstructors = (Constructor<? extends RemoteNetResponseParser>[]) aClass.getDeclaredConstructors();
             Optional<Constructor<? extends RemoteNetResponseParser>> constructorOptional = Arrays.stream(declaredConstructors).filter(item -> item.getParameterCount() == 0).filter(item -> item.getModifiers() == Modifier.PUBLIC).findFirst();
 
-            if (constructorOptional.isEmpty())
+            if (!constructorOptional.isPresent())
                 throw new IllegalStateException(aClass.getName() + "未提供默认构造函数");
 
             Constructor<? extends RemoteNetResponseParser> constructor = constructorOptional.get();

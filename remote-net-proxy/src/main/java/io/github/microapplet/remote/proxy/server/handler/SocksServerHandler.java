@@ -30,7 +30,8 @@ public final class SocksServerHandler extends SimpleChannelInboundHandler<SocksM
     public static final SocksServerHandler INSTANCE = new SocksServerHandler();
     private static final Logger log = Logger.getLogger(SocksServerHandler.class.getName());
 
-    private SocksServerHandler() { }
+    private SocksServerHandler() {
+    }
 
     @Override
     public void channelRead0(ChannelHandlerContext ctx, SocksMessage socksRequest) {
@@ -46,25 +47,23 @@ public final class SocksServerHandler extends SimpleChannelInboundHandler<SocksM
                 }
                 break;
             case SOCKS5:
-                switch (socksRequest) {
-                    case Socks5InitialRequest ignored -> {
-                        ctx.pipeline().addFirst(new Socks5CommandRequestDecoder());
-                        ctx.write(new DefaultSocks5InitialResponse(Socks5AuthMethod.NO_AUTH));
+                if (socksRequest instanceof Socks5InitialRequest) {
+                    ctx.pipeline().addFirst(new Socks5CommandRequestDecoder());
+                    ctx.write(new DefaultSocks5InitialResponse(Socks5AuthMethod.NO_AUTH));
+                } else if (socksRequest instanceof Socks5PasswordAuthRequest) {
+                    ctx.pipeline().addFirst(new Socks5CommandRequestDecoder());
+                    ctx.write(new DefaultSocks5PasswordAuthResponse(Socks5PasswordAuthStatus.SUCCESS));
+                } else if (socksRequest instanceof Socks5CommandRequest) {
+                    Socks5CommandRequest socks5CmdRequest = (Socks5CommandRequest) socksRequest;
+                    if (socks5CmdRequest.type() == Socks5CommandType.CONNECT) {
+                        ctx.pipeline().addLast(new SocksServerConnectHandler());
+                        ctx.pipeline().remove(this);
+                        ctx.fireChannelRead(socksRequest);
+                    } else {
+                        ctx.close();
                     }
-                    case Socks5PasswordAuthRequest ignored -> {
-                        ctx.pipeline().addFirst(new Socks5CommandRequestDecoder());
-                        ctx.write(new DefaultSocks5PasswordAuthResponse(Socks5PasswordAuthStatus.SUCCESS));
-                    }
-                    case Socks5CommandRequest socks5CmdRequest -> {
-                        if (socks5CmdRequest.type() == Socks5CommandType.CONNECT) {
-                            ctx.pipeline().addLast(new SocksServerConnectHandler());
-                            ctx.pipeline().remove(this);
-                            ctx.fireChannelRead(socksRequest);
-                        } else {
-                            ctx.close();
-                        }
-                    }
-                    default -> ctx.close();
+                } else {
+                    ctx.close();
                 }
                 break;
             case UNKNOWN:

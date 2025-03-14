@@ -110,7 +110,7 @@ public class RemoteHandlerContext {
             this.onHandlers.sort(Comparator.comparingInt(LifeCycle::order));
         }
 
-        if (lifeCycle instanceof Finally){
+        if (lifeCycle instanceof Finally) {
             this.finallyHandlers.add((Finally) lifeCycle);
             this.finallyHandlers.sort(Comparator.comparingInt(LifeCycle::order));
         }
@@ -255,7 +255,7 @@ public class RemoteHandlerContext {
         boolean retry = false;
         for (RetryWhen handler : retryWhenHandlers) {
             if (Objects.isNull(handler)) continue;
-            if (handler.retryWhen(data,methodConfig, req, res, args)) {
+            if (handler.retryWhen(data, methodConfig, req, res, args)) {
                 retry = true;
                 break;
             }
@@ -263,19 +263,19 @@ public class RemoteHandlerContext {
         return retry;
     }
 
-    public boolean successWhen(Object data, RemoteMethodConfig methodConfig,RemoteReqContext req, RemoteResContext res, Object[] args) {
+    public boolean successWhen(Object data, RemoteMethodConfig methodConfig, RemoteReqContext req, RemoteResContext res, Object[] args) {
         for (Integer index : this.callbackIndex) {
             Object callBack = args[index];
             if (Objects.isNull(callBack) || !(callBack instanceof SuccessWhen))
                 continue;
 
-            if (!((SuccessWhen) callBack).success(data,methodConfig, req, res, args))
+            if (!((SuccessWhen) callBack).success(data, methodConfig, req, res, args))
                 return false;
         }
 
         for (SuccessWhen handler : successWhenHandlers) {
             if (Objects.isNull(handler)) continue;
-            if (!handler.success(data,methodConfig, req, res, args)) {
+            if (!handler.success(data, methodConfig, req, res, args)) {
                 return false;
             }
         }
@@ -283,10 +283,10 @@ public class RemoteHandlerContext {
         return true;
     }
 
-    public boolean onError(Object data, RemoteMethodConfig methodConfig,RemoteReqContext req, RemoteResContext res, Throwable ex, Object[] args) {
+    public boolean onError(Object data, RemoteMethodConfig methodConfig, RemoteReqContext req, RemoteResContext res, Throwable ex, Object[] args) {
         for (OnError handler : onErrorHandlers) {
             if (Objects.isNull(handler)) continue;
-            if (handler.onError(data,methodConfig, req, res, ex, args))
+            if (handler.onError(data, methodConfig, req, res, ex, args))
                 return true;
         }
 
@@ -297,7 +297,7 @@ public class RemoteHandlerContext {
             if (Objects.isNull(callBack)) continue;
 
             if (callBack instanceof OnError) {
-                if (((OnError)callBack).onError(data,methodConfig, req, res, ex, args))
+                if (((OnError) callBack).onError(data, methodConfig, req, res, ex, args))
                     return true;
             }
         }
@@ -305,11 +305,11 @@ public class RemoteHandlerContext {
         return false;
     }
 
-    public void finalFunction(Object data, RemoteMethodConfig methodConfig, RemoteReqContext req, RemoteResContext res, Object[] args){
+    public void finalFunction(Object data, RemoteMethodConfig methodConfig, RemoteReqContext req, RemoteResContext res, Object[] args) {
         for (Finally handler : finallyHandlers) {
             if (Objects.isNull(handler))
                 continue;
-            handler.finallyFun(data,methodConfig,req,res,args);
+            handler.finallyFun(data, methodConfig, req, res, args);
         }
 
         for (Integer index : this.callbackIndex) {
@@ -319,8 +319,8 @@ public class RemoteHandlerContext {
             if (Objects.isNull(callBack))
                 continue;
 
-            if (callBack instanceof Finally handler){
-                handler.finallyFun(data,methodConfig,req,res,args);
+            if (callBack instanceof Finally) {
+                ((Finally) callBack).finallyFun(data, methodConfig, req, res, args);
             }
         }
         req.clean();

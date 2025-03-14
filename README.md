@@ -11,8 +11,10 @@
     remote-core： Remote 框架核心架构，此库定义了Remote的一等公民：RemoteLifeCycle, LifeCycle, CallBack 基于此三个接口/注解，用户可以扩展任何想要的框架， 为此我们也希望参与者发挥你们的智慧，构建一个更加完整的 Remote 生态
     remote-net:   Remote 网络包，定义了与网络相关的部分库，利用 @Server 声明用户构建的客户端想要连接那个网络系统（服务器），并生命 Remote 网络环境仓库接口，用户可利用该接口完成对三方网络系统环境的管理，特别适用于在内网环境下，调用三方公众平台 API 域名被代理的情况
     remote-net-repository:    当前提供基于  mybatis-plus 的 基于 DB 的 Remote 网络环境仓库管理方案
-    remote-net-repository-default:    提供默认的 基于 DB 的网咯环境数据库表 及其映射实体
     remote-net-http:   Remote  对 HTTP/HTTPS 协议下的 API 客户端适配，注意：当前库基于  netty  完成基于 HTTP/HTTPS 协议下对三方 HTTP/HTTPS 接口的访问功能
+    remote-net-http-net:    基于netty的http网络请求框架
+    remote-net-http-apache: 基于apache-http-client 的http网络请求框架
+    remote-net-proxy:   网络代理框架
     remote-spring:    Remote 与 Spring 的集成
     remote-zen-pom:    提供一个类似于  spring-boot-dependencies 的版本管理库
 
@@ -26,8 +28,8 @@
                 <groupId>io.github.microapplet</groupId>
                 <artifactId>remote-zen-pom</artifactId>
                 <version>${remote.version}</version>
-                <type>pom</type>
                 <scope>import</scope>
+                <type>pom</type>
             </dependency>
         </dependencies>
     </dependencyManagement>
