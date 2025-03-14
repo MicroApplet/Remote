@@ -16,24 +16,17 @@
 package io.github.microapplet.remote.http.annotation;
 
 import io.github.microapplet.remote.annotation.RemoteSubProperty;
-import io.github.microapplet.remote.context.RemoteMethodConfig;
-import io.github.microapplet.remote.context.RemoteReqContext;
-import io.github.microapplet.remote.context.RemoteResContext;
-import io.github.microapplet.remote.http.annotation.lifecycle.AbstractHttpHeaderLifeCycle;
-import io.github.microapplet.remote.http.annotation.lifecycle.AbstractHttpMappingLifeCycle;
-import io.github.microapplet.remote.http.annotation.lifecycle.AbstractHttpQueryLifeCycle;
+import io.github.microapplet.remote.context.*;
+import io.github.microapplet.remote.http.annotation.lifecycle.*;
 import io.github.microapplet.remote.http.client.ApacheRemoteHTTPClient;
-import io.github.microapplet.remote.net.annotation.AbstractSslLifeCycle;
-import io.github.microapplet.remote.net.annotation.ServerLifeCycle;
+import io.github.microapplet.remote.net.annotation.*;
 import io.github.microapplet.remote.net.client.RemoteNetClient;
 import io.github.microapplet.remote.net.context.RemoteNetNodeKey;
-import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.message.BasicNameValuePair;
 
-import javax.net.ssl.SSLContext;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 
@@ -44,7 +37,7 @@ import java.util.*;
  * @version 3.0.0
  * @since 2023/10/10, &nbsp;&nbsp; <em>version:3.0.0</em>,  &nbsp;&nbsp;  <em>java version:8</em>
  */
-@RemoteSubProperty("apache.http,https")
+@RemoteSubProperty("apache")
 public final class ApacheHttpProcessLifeCycle extends HttpMapping.HttpProcessLifeCycle {
 
     @Override
@@ -55,20 +48,12 @@ public final class ApacheHttpProcessLifeCycle extends HttpMapping.HttpProcessLif
 
         Map<String, String> commonQuery = Optional.ofNullable(req.get(AbstractHttpMappingLifeCycle.COMMON_QUERY)).orElseGet(HashMap::new);
         Map<String, String> configCommonQuery = methodConfig.config(AbstractHttpMappingLifeCycle.COMMON_QUERY);
-        if (Optional.ofNullable(configCommonQuery).isPresent())
-            commonQuery.putAll(configCommonQuery);
+        Optional.ofNullable(configCommonQuery).ifPresent(item -> item.forEach(commonQuery::putIfAbsent));
+
         Map<String, String> queries = Optional.ofNullable(req.get(AbstractHttpQueryLifeCycle.HTTP_QUERY_VALUE)).orElseGet(HashMap::new);
         List<NameValuePair> nameValuePairList = new ArrayList<>();
-        if (MapUtils.isNotEmpty(commonQuery)) {
-            for (Map.Entry<String, String> entry : commonQuery.entrySet()) {
-                nameValuePairList.add(new BasicNameValuePair(entry.getKey(), entry.getValue()));
-            }
-        }
-        if (MapUtils.isNotEmpty(queries)) {
-            for (Map.Entry<String, String> entry : queries.entrySet()) {
-                nameValuePairList.add(new BasicNameValuePair(entry.getKey(), entry.getValue()));
-            }
-        }
+        commonQuery.entrySet().stream().map(en -> new BasicNameValuePair(en.getKey(), en.getValue())).forEach(nameValuePairList::add);
+        queries.entrySet().stream().map(en -> new BasicNameValuePair(en.getKey(), en.getValue())).forEach(nameValuePairList::add);
 
         String query = URLEncodedUtils.format(nameValuePairList, StandardCharsets.UTF_8);
         if (StringUtils.isNotBlank(query))
@@ -77,12 +62,10 @@ public final class ApacheHttpProcessLifeCycle extends HttpMapping.HttpProcessLif
             uri = uri.replaceFirst("&", "?");
 
         req.put(AbstractHttpMappingLifeCycle.HTTP_REQUEST_URI, uri);
+        Optional.ofNullable(req.get(ServerLifeCycle.NET_NODE_KEY_GENERIC_KEY))
+                .ifPresent(item -> Optional.ofNullable(req.get(AbstractSslLifeCycle.SSL_CONTEXT_GENERIC_KEY))
+                        .ifPresent(item::setSslContext));
 
-
-        RemoteNetNodeKey nodeKey = req.get(ServerLifeCycle.NET_NODE_KEY_GENERIC_KEY);
-        SSLContext sslContext = req.get(AbstractSslLifeCycle.SSL_CONTEXT_GENERIC_KEY);
-        if (Objects.nonNull(nodeKey) && Objects.nonNull(sslContext))
-            nodeKey.setSslContext(sslContext);
         Map<String, String> headerMap = Optional.ofNullable(req.get(AbstractHttpHeaderLifeCycle.HTTP_HEADER_VALUE)).orElseGet(HashMap::new);
         req.put(AbstractHttpHeaderLifeCycle.HTTP_HEADER_VALUE, headerMap);
     }

@@ -29,7 +29,7 @@ import io.github.microapplet.remote.http.client.ApacheRemoteHTTPClient;
  * @version 3.0.0
  * @since 2023/10/19, &nbsp;&nbsp; <em>version:3.0.0</em>, &nbsp;&nbsp; <em>java version:8</em>
  */
-@RemoteSubProperty("apache.http,https")
+@RemoteSubProperty("apache")
 public final class ApacheOctetStreamBodyLifeCycle extends OctetStreamBody.OctetStreamBodyLifeCycle {
     @Override
     protected void doBefore(Object data, RemoteMethodConfig methodConfig, RemoteReqContext req, RemoteResContext res, Object[] args) {

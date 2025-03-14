@@ -16,61 +16,51 @@
 
 package io.github.microapplet.remote.http.client;
 
-import io.github.microapplet.remote.context.GenericKey;
-import io.github.microapplet.remote.context.RemoteReqContext;
-import io.github.microapplet.remote.context.RemoteResContext;
+import io.github.microapplet.remote.context.*;
 import io.github.microapplet.remote.http.annotation.HttpMethod;
-import io.github.microapplet.remote.http.annotation.lifecycle.AbstractHttpMappingLifeCycle;
-import io.github.microapplet.remote.http.annotation.lifecycle.AbstractOctetStreamBodyLifeCycle;
+import io.github.microapplet.remote.http.annotation.lifecycle.*;
 import io.github.microapplet.remote.net.annotation.ServerLifeCycle;
 import io.github.microapplet.remote.net.client.RemoteNetClient;
 import io.github.microapplet.remote.net.constant.RemoteConstant;
 import io.github.microapplet.remote.net.context.RemoteNetNodeKey;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.*;
 import org.apache.http.*;
-import org.apache.http.auth.AuthScope;
-import org.apache.http.auth.Credentials;
-import org.apache.http.auth.UsernamePasswordCredentials;
+import org.apache.http.auth.*;
 import org.apache.http.client.CredentialsProvider;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.*;
 import org.apache.http.client.protocol.HttpClientContext;
-import org.apache.http.config.Registry;
-import org.apache.http.config.RegistryBuilder;
-import org.apache.http.conn.socket.ConnectionSocketFactory;
-import org.apache.http.conn.socket.PlainConnectionSocketFactory;
-import org.apache.http.conn.ssl.NoopHostnameVerifier;
-import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
-import org.apache.http.entity.ByteArrayEntity;
-import org.apache.http.entity.ContentType;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.BasicCredentialsProvider;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
+import org.apache.http.config.*;
+import org.apache.http.conn.socket.*;
+import org.apache.http.conn.ssl.*;
+import org.apache.http.entity.*;
+import org.apache.http.impl.client.*;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.protocol.HttpContext;
 import org.apache.http.ssl.SSLContextBuilder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.slf4j.*;
 
-import javax.net.ssl.HostnameVerifier;
-import javax.net.ssl.SSLContext;
+import javax.net.ssl.*;
 import java.io.IOException;
-import java.net.InetSocketAddress;
-import java.net.Socket;
+import java.net.*;
 import java.nio.charset.StandardCharsets;
-import java.security.KeyManagementException;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
+import java.security.*;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Consumer;
 
 import static io.github.microapplet.remote.http.annotation.lifecycle.AbstractHttpHeaderLifeCycle.HTTP_HEADER_VALUE;
 import static io.github.microapplet.remote.http.annotation.lifecycle.BaseObjectMapperRequestBodyLifeCycle.STRING_BODY_KEY;
 
+/**
+ * 基于 Apache 的HTTP 客户端
+ *
+ * @author <a href="mailto:asialjim@hotmail.com">Asial Jim</a>
+ * @version 1.0.0
+ * @since 2024/3/8, &nbsp;&nbsp; <em>version:1.0.0</em>
+ */
 public class ApacheRemoteHTTPClient implements RemoteNetClient {
     public static final GenericKey<HttpEntity> HTTP_ENTITY_GENERIC_KEY = GenericKey.keyOf("apache_http_request_entity");
     private static final Logger log = LoggerFactory.getLogger(ApacheRemoteHTTPClient.class);
@@ -79,7 +69,6 @@ public class ApacheRemoteHTTPClient implements RemoteNetClient {
     private final String proxyHost;
     private final Integer proxyPort;
     private final int timeout;
-
     private final int nodeCode;
 
     public ApacheRemoteHTTPClient(RemoteNetNodeKey nodeKey) {
@@ -116,13 +105,13 @@ public class ApacheRemoteHTTPClient implements RemoteNetClient {
         PoolingHttpClientConnectionManager cm = POOLING_HTTP_CLIENT_CONNECTION_MANAGER_MAP.get(this.nodeCode);
         if (Objects.nonNull(cm))
             return;
-        if (this.nodeKey.proxyEnable()) {
-            reg = RegistryBuilder.<ConnectionSocketFactory>create().register(schema, Objects.nonNull(sslContext) ? new Socks5ProxySSLConnectionSocketFactory(sslContext, NoopHostnameVerifier.INSTANCE) : new Socks5ProxyConnectionSocketFactory()).build();
-        } else {
-            reg = RegistryBuilder.<ConnectionSocketFactory>create().register(schema, Objects.nonNull(sslContext) ? new SSLConnectionSocketFactory(sslContext, NoopHostnameVerifier.INSTANCE) : PlainConnectionSocketFactory.getSocketFactory()).build();
-        }
+
+        reg = this.nodeKey.proxyEnable()
+                ? RegistryBuilder.<ConnectionSocketFactory>create().register(schema, Objects.nonNull(sslContext) ? new Socks5ProxySSLConnectionSocketFactory(sslContext, NoopHostnameVerifier.INSTANCE) : new Socks5ProxyConnectionSocketFactory()).build()
+                : RegistryBuilder.<ConnectionSocketFactory>create().register(schema, Objects.nonNull(sslContext) ? new SSLConnectionSocketFactory(sslContext, NoopHostnameVerifier.INSTANCE) : PlainConnectionSocketFactory.getSocketFactory()).build();
+
         cm = new PoolingHttpClientConnectionManager(reg);
-        POOLING_HTTP_CLIENT_CONNECTION_MANAGER_MAP.put(this.nodeCode,cm);
+        POOLING_HTTP_CLIENT_CONNECTION_MANAGER_MAP.put(this.nodeCode, cm);
     }
 
     public static void addStringEntity(RemoteReqContext req) {
@@ -133,14 +122,12 @@ public class ApacheRemoteHTTPClient implements RemoteNetClient {
     }
 
     public static void addOctetStreamEntity(RemoteReqContext req) {
-        Map<String, String> header = req.get(HTTP_HEADER_VALUE);
-        String contentType = Optional.ofNullable(header)
-                .map(Map::entrySet)
-                .stream()
-                .flatMap(Collection::stream)
+        Map<String, String> header = Optional.ofNullable(req.get(HTTP_HEADER_VALUE)).orElseGet(HashMap::new);
+        String contentType = header.entrySet().stream()
                 .filter(entry -> StringUtils.equalsIgnoreCase("content-type", entry.getKey()))
                 .map(Map.Entry::getValue)
-                .findFirst().orElse("application/octet-stream");
+                .findAny().orElse("application/octet-stream");
+
         byte[] bytes = Optional.ofNullable(req.get(AbstractOctetStreamBodyLifeCycle.OCTET_STREAM_VALUE)).orElse(new byte[0]);
         ByteArrayEntity entity = new ByteArrayEntity(bytes, ContentType.create(contentType));
         req.put(ApacheRemoteHTTPClient.HTTP_ENTITY_GENERIC_KEY, entity);
@@ -149,13 +136,14 @@ public class ApacheRemoteHTTPClient implements RemoteNetClient {
     private static void addHttpHeader(RemoteReqContext req, HttpRequest httpRequest) {
         Map<String, String> commonHeader = req.get(AbstractHttpMappingLifeCycle.COMMON_HEADER);
         Map<String, String> headers = req.get(HTTP_HEADER_VALUE);
-        if (MapUtils.isNotEmpty(commonHeader))
-            commonHeader.forEach(httpRequest::setHeader);
-
+        Map<String, String> targetHeader = new HashMap<>();
         if (MapUtils.isNotEmpty(headers))
-            headers.forEach(httpRequest::setHeader);
-        httpRequest.addHeader("User-Agent","Remote HTTP Client on Apache, Java 8");
-        httpRequest.addHeader("Host", req.get(RemoteConstant.HOST));
+            headers.forEach(targetHeader::putIfAbsent);
+        if (MapUtils.isNotEmpty(commonHeader))
+            commonHeader.forEach(targetHeader::putIfAbsent);
+
+        targetHeader.forEach(httpRequest::addHeader);
+
     }
 
     public static String parseHttpUrl(RemoteReqContext req) {
@@ -221,8 +209,10 @@ public class ApacheRemoteHTTPClient implements RemoteNetClient {
             CredentialsProvider credsProvider = new BasicCredentialsProvider();
             credsProvider.setCredentials(authScope, credentials);
 
+            //noinspection resource
             httpclient = HttpClients.custom().setConnectionManager(cm).setDefaultCredentialsProvider(credsProvider).build();
         } else {
+            //noinspection resource
             httpclient = HttpClients.custom().setConnectionManager(cm).build();
         }
 
@@ -245,34 +235,34 @@ public class ApacheRemoteHTTPClient implements RemoteNetClient {
             try (CloseableHttpResponse response = httpclient.execute(httpHost, httpRequest, context)) {
                 if (Objects.isNull(response))
                     return;
+
                 res.setStatus(response.getStatusLine());
-                Header[] httpHeaders = response.getAllHeaders();
-                final Map<String, String> headerMap;
-                Object headersObj = res.getHeaders();
-                if (Objects.isNull(headersObj)){
-                    headerMap = new HashMap<>();
-                } else {
-                    if (headersObj instanceof Map){
-                        //noinspection unchecked
-                        headerMap = (Map<String, String>) headersObj;
-                    } else {
-                        headerMap = new HashMap<>();
-                    }
-                }
+                Map<String, String> headerMap = new HashMap<>();
+                Optional.ofNullable(response.getAllHeaders())
+                        .map(Arrays::stream)
+                        .ifPresent(stream ->
+                                stream.forEach(item ->
+                                        headerMap.putIfAbsent(item.getName(), item.getValue())));
 
-
-                if (ArrayUtils.isNotEmpty(httpHeaders))
-                    Arrays.stream(httpHeaders).forEach(item -> headerMap.putIfAbsent(item.getName(), item.getValue()));
+                Optional.ofNullable(res.getHeaders())
+                        .filter(item -> item instanceof Map<?, ?>)
+                        .map(item -> (Map<?, ?>) item)
+                        .ifPresent((Consumer<Map<?, ?>>) map ->
+                                map.forEach((k, v)
+                                        -> headerMap.putIfAbsent(String.valueOf(k), String.valueOf(v))));
 
                 res.setHeaders(headerMap);
                 ProtocolVersion protocolVersion = response.getProtocolVersion();
                 res.setProtocol(protocolVersion);
                 HttpEntity resEntity = response.getEntity();
+                if (Objects.isNull(resEntity))
+                    return;
 
-                if (Objects.nonNull(resEntity)) {
-                    byte[] byteArray = IOUtils.toByteArray(resEntity.getContent());
-                    res.setTempData(byteArray);
-                }
+                byte[] byteArray = IOUtils.toByteArray(resEntity.getContent());
+                if (headerMap.keySet().stream().noneMatch(item -> StringUtils.equalsIgnoreCase("content-length", item)))
+                    headerMap.put("Content-Length", String.valueOf(ArrayUtils.getLength(byteArray)));
+
+                res.setTempData(byteArray);
             } catch (IOException e) {
                 res.setCause(e);
             } finally {

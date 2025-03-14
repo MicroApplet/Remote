@@ -36,6 +36,7 @@ import java.util.List;
  * @since 2023/9/27, &nbsp;&nbsp; <em>version:3.0.0</em>, &nbsp;&nbsp; <em>java version:8</em>
  */
 public class ApplicationXmlRemoteNetResponseParser extends BaseRemoteNetResponseParser {
+    public static final ApplicationXmlRemoteNetResponseParser INSTANCE = new ApplicationXmlRemoteNetResponseParser();
     private static final Logger log = LoggerFactory.getLogger(ApplicationXmlRemoteNetResponseParser.class);
     private static final List<MimeType> MIME_TYPES = new ArrayList<>();
     static {
@@ -48,7 +49,7 @@ public class ApplicationXmlRemoteNetResponseParser extends BaseRemoteNetResponse
         String xml = (String) resContext.getTempData();
         Class<?> returnClass = methodConfig.getReturnClass();
 
-        Object res = AbstractJacksonUtil.toObject(xml, returnClass, AbstractJacksonUtil.XML_MAPPER);
+        Object res = AbstractJacksonUtil.xml2Object(xml, returnClass);
         log.info("\r\n\tRemote NET Res Data <<< Client:{} <<< {}", methodConfig.getRemoteName(),res);
         resContext.setData(res);
     }

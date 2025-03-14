@@ -13,23 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package io.github.microapplet.remote.net.event;
 
-package io.github.microapplet.remote.net;
-
-import io.github.microapplet.remote.net.repository.mapper.ApiServerInfoMapper;
-import org.mybatis.spring.annotation.MapperScan;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
+import io.github.microapplet.remote.net.repository.ApiServerInfo;
+import org.springframework.context.ApplicationEvent;
 
 /**
- * 网络仓库包
+ * ApiServerEnvironmentLockedEvent
  *
  * @author Copyright © <a href="mailto:asialjim@hotmail.com">Asial Jim</a>   Co., LTD
- * @version 3.0.0
- * @since 2023/10/18, &nbsp;&nbsp; <em>version:3.0.0</em>,  &nbsp;&nbsp;  <em>java version:8</em>
+ * @since 2023/3/17, &nbsp;&nbsp; <em>version:</em>, &nbsp;&nbsp; <em>java version:</em>
  */
-@Configuration
-@ComponentScan
-@MapperScan(basePackageClasses = ApiServerInfoMapper.class)
-public class RemoteNetRepositoryScanner {
+public class ApiServerEnvironmentLockedEvent extends ApplicationEvent {
+    public ApiServerEnvironmentLockedEvent(ApiServerInfo p0) {
+        super(p0);
+    }
+
+    @SuppressWarnings("unused")
+    public ApiServerInfo apiServerInfo(){
+        return (ApiServerInfo) getSource();
+    }
 }

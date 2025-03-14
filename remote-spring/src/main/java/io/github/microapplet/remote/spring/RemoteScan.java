@@ -22,7 +22,6 @@ import java.lang.annotation.*;
 @Documented
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-//@Import({RemoteBeanDefinitionSelector.class})
 @Import({RemoteBeanDefinitionRegistrar.class})
 public @interface RemoteScan {
 

@@ -55,7 +55,7 @@ public class RemoteProxyConfig implements InitializingBean {
     }
 
     @Bean
-    public RemoteHealthCheckServer healthCheckServer(){
+    public RemoteHealthCheckServer healthCheckServer() {
         RemoteHealthCheckServer server = new RemoteHealthCheckServer();
         server.setHealthPort(property.getHealthPort());
         return server;
@@ -66,14 +66,12 @@ public class RemoteProxyConfig implements InitializingBean {
         if (Objects.isNull(property))
             property = RemoteProperty.defaultRemoteProperty();
 
-        log.info("""
-                        \r
-                        \t开始启动前置代理服务器，配置: \r
-                        \t\tBoss 线程数：{}，\r
-                        \t\tWorker 线程数: {}，\r
-                        \t\t健康检查端口：{}， \r
-                        \t\t日志级别：{}， \r
-                        \t\t端口：{}""",
+        log.info("\r\t开始启动前置代理服务器，配置: \r" +
+                        "\t\tBoss 线程数：{}，\r" +
+                        "\t\tWorker 线程数: {}，\r" +
+                        "\t\t健康检查端口：{}， \r" +
+                        "\t\t日志级别：{}， \r" +
+                        "\t\t端口：{}",
                 property.getBoss(),
                 property.getWorker(),
                 property.getHealthPort(),

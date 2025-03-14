@@ -137,7 +137,8 @@ public class NettyPoolUtil {
             if (Objects.isNull(arg))
                 return;
 
-            if (arg instanceof ReferenceCounted counted) {
+            if (arg instanceof ReferenceCounted) {
+                ReferenceCounted counted = (ReferenceCounted) arg;
                 int i = counted.refCnt();
                 if (log.isDebugEnabled())
                     log.debug("Release Reference: {} Counted: {}", counted.getClass().getName(), i);
@@ -151,8 +152,8 @@ public class NettyPoolUtil {
                     return;
                 }
 
-                if (counted instanceof ByteBufHolder holder) {
-                    ByteBuf content = holder.content();
+                if (counted instanceof ByteBufHolder) {
+                    ByteBuf content =((ByteBufHolder)counted).content();
                     if (content instanceof EmptyByteBuf) {
                         ReferenceCountUtil.safeRelease(counted, i);
                         if (log.isDebugEnabled())

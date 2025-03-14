@@ -34,7 +34,8 @@ public final class SocksServerConnectHandler extends SimpleChannelInboundHandler
 
     @Override
     public void channelRead0(final ChannelHandlerContext ctx, final SocksMessage message) {
-        if (message instanceof Socks4CommandRequest request) {
+        if (message instanceof Socks4CommandRequest) {
+            Socks4CommandRequest request = (Socks4CommandRequest) message;
             Promise<Channel> promise = ctx.executor().newPromise();
             promise.addListener((FutureListener<Channel>) future -> {
                 final Channel outboundChannel = future.getNow();
@@ -75,7 +76,8 @@ public final class SocksServerConnectHandler extends SimpleChannelInboundHandler
                 }
                 */
             });
-        } else if (message instanceof Socks5CommandRequest request) {
+        } else if (message instanceof Socks5CommandRequest) {
+            Socks5CommandRequest request = (Socks5CommandRequest) message;
             Promise<Channel> promise = ctx.executor().newPromise();
             promise.addListener((FutureListener<Channel>) future -> {
                 final Channel outboundChannel = future.getNow();

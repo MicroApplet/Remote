@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2023 <a href="mailto:asialjim@hotmail.com">Asial Jim</a>
+ * Copyright 2014-2024 <a href="mailto:asialjim@hotmail.com">Asial Jim</a>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,19 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- package io.github.microapplet.remote.config;
 
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
+package io.github.microapplet.remote.net;
+
+import io.github.microapplet.remote.net.repository.mapper.ApiServerInfoMapper;
+import org.mybatis.spring.annotation.MapperScan;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
- @Configuration
- @EnableConfigurationProperties(RemoteLocalEnvProperty.class)
- @ConditionalOnProperty(
-         prefix = RemoteLocalEnvProperty.PREFIX,
-         value = RemoteLocalEnvProperty.ENABLE,
-         havingValue = "true",
-         matchIfMissing = true
- )
- public class RemoteLocalEnvAutoConfig {
- }
+/**
+ * 网络仓库包
+ *
+ * @author <a href="mailto:asialjim@hotmail.com">Asial Jim</a>
+ * @version 3.0.0
+ * @since 2024 04 07, &nbsp;&nbsp; <em>version:3.0.0</em>
+ */
+@Configuration
+@ComponentScan
+@MapperScan(basePackageClasses = ApiServerInfoMapper.class)
+public class RemoteNetRepositoryMyBatisFlexScanner {
+}

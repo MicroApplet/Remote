@@ -153,7 +153,7 @@ public final class ServerLifeCycle implements Before, After, SuccessWhen, OnErro
         req.put(RemoteConstant.NAMESPACE, namespace);
         req.put(RemoteConstant.ENV, env);
 
-        RemoteNetNodeKey nodeKey = RemoteNetNodeKey.builder().schema(schema).host(host).port(port).proxyHost(proxyHost).proxyPort(proxyPort).trace(MDC.get("REQUEST_ID")).logLevel(logLevel).build();
+        RemoteNetNodeKey nodeKey = RemoteNetNodeKey.builder().schema(schema).host(host).port(port).proxyHost(proxyHost).proxyPort(proxyPort).trace(MDC.get("REQUEST_ID")).logLevel(logLevel).timeout(timeout).build();
         req.put(ServerLifeCycle.NET_NODE_KEY_GENERIC_KEY, nodeKey);
 
         req.put(ASYNC_COUNT_DOWN_LATCH_KEY, new CountDownLatch(1));

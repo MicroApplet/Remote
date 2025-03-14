@@ -24,7 +24,6 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 
@@ -33,7 +32,6 @@ import java.util.Optional;
 
 @Slf4j
 @Configuration
-@ComponentScan
 public class RemoteLocalEnvConfiguration implements ApplicationContextAware, InitializingBean {
     @Setter
     private ApplicationContext applicationContext;

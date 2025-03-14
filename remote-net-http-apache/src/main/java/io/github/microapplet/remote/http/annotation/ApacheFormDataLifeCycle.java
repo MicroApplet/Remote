@@ -16,19 +16,18 @@
 package io.github.microapplet.remote.http.annotation;
 
 import io.github.microapplet.remote.annotation.RemoteSubProperty;
-import io.github.microapplet.remote.context.RemoteMethodConfig;
-import io.github.microapplet.remote.context.RemoteReqContext;
-import io.github.microapplet.remote.context.RemoteResContext;
+import io.github.microapplet.remote.context.*;
 import io.github.microapplet.remote.http.annotation.body.FormData;
-import io.github.microapplet.remote.http.annotation.lifecycle.UploadAttributeWrapper;
-import io.github.microapplet.remote.http.annotation.lifecycle.UploadByteArrayWrapper;
+import io.github.microapplet.remote.http.annotation.lifecycle.*;
 import io.github.microapplet.remote.http.client.ApacheRemoteHTTPClient;
-import org.apache.commons.collections4.CollectionUtils;
 import org.apache.http.HttpEntity;
+import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
 
-import java.util.List;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
 
 /**
  * 基于Apache 的HTTP 上传文件处理器
@@ -37,7 +36,7 @@ import java.util.List;
  * @version 3.0.0
  * @since 2023/10/10, &nbsp;&nbsp; <em>version:3.0.0</em>,  &nbsp;&nbsp;  <em>java version:8</em>
  */
-@RemoteSubProperty("apache.http,https")
+@RemoteSubProperty("apache")
 public class ApacheFormDataLifeCycle extends FormData.FormDataLifeCycle {
     @Override
     public void invoke(Object data, RemoteMethodConfig methodConfig, RemoteReqContext req, RemoteResContext res, Object[] args) {
@@ -45,23 +44,21 @@ public class ApacheFormDataLifeCycle extends FormData.FormDataLifeCycle {
 
     @Override
     protected void doBefore(Object data, RemoteMethodConfig methodConfig, RemoteReqContext req, RemoteResContext res, Object[] args) {
-        List<UploadAttributeWrapper> attributes = req.get(UPLOAD_ATTRIBUTE_LIST);
-        List<UploadByteArrayWrapper> contents = req.get(UPLOAD_CONTENT_LIST);
+        List<UploadAttributeWrapper> attributes = Optional.ofNullable(req.get(UPLOAD_ATTRIBUTE_LIST)).orElseGet(ArrayList::new);
+        List<UploadByteArrayWrapper> contents = Optional.ofNullable(req.get(UPLOAD_CONTENT_LIST)).orElseGet(ArrayList::new);
         final MultipartEntityBuilder builder = MultipartEntityBuilder.create();
 
-        if (CollectionUtils.isNotEmpty(attributes)) {
-            for (UploadAttributeWrapper attribute : attributes) {
-                builder.addTextBody(attribute.getName(), attribute.getValue(), ContentType.parse(attribute.getContentType()));
-            }
-        }
+        attributes.forEach(item -> builder.addTextBody(item.getName(), item.getValue(), ContentType.parse(item.getContentType())));
+        contents.forEach(item -> {
 
-        if (CollectionUtils.isNotEmpty(contents)) {
-            for (UploadByteArrayWrapper content : contents) {
-                builder.addBinaryBody(content.getName(), content.getContent(), ContentType.parse(content.getContentType()), content.getFileName());
-            }
-        }
+            String fileName = item.getFileName();
+            //noinspection deprecation
+            String encode = URLEncoder.encode(fileName);
+            builder.addBinaryBody(item.getName(),item.getContent(),ContentType.parse(item.getContentType()),encode);
+        });
+        //contents.forEach(item -> builder.addBinaryBody(item.getName(), item.getContent(), ContentType.parse(item.getContentType()), URLEncoder.encode(item.getFileName(), StandardCharsets.UTF_8.name()) item.getFileName()));
 
         HttpEntity entity = builder.build();
-        req.put(ApacheRemoteHTTPClient.HTTP_ENTITY_GENERIC_KEY,entity);
+        req.put(ApacheRemoteHTTPClient.HTTP_ENTITY_GENERIC_KEY, entity);
     }
 }

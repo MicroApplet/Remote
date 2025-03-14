@@ -27,6 +27,7 @@ import io.github.microapplet.remote.net.constant.RemoteConstant;
 import io.github.microapplet.remote.net.jackson.AbstractJacksonUtil;
 import io.github.microapplet.remote.net.mime.MimeMenu;
 import io.github.microapplet.remote.net.response.RemoteNetResponseParserHolder;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -96,7 +97,7 @@ import java.util.Optional;
      public void after(Object data, RemoteMethodConfig methodConfig, RemoteReqContext req, RemoteResContext res, Object[] args) {
          doAfter(data, methodConfig, req, res, args);
          log.info("\r\n\tRemote NET Res Line <<< Client:{} <<< Status: {}, ProtocolVersion: {}", methodConfig.getRemoteName(), res.getStatus(), res.getProtocol());
-         log.info("\r\n\tRemote NET Res Head <<< Client:{} <<< {}", methodConfig.getRemoteName(), AbstractJacksonUtil.writeValueAsString(res.getHeaders(), AbstractJacksonUtil.JSON_MAPPER));
+         log.info("\r\n\tRemote NET Res Head <<< Client:{} <<< {}", methodConfig.getRemoteName(), AbstractJacksonUtil.writeValueAsJsonString(res.getHeaders()));
 
          Class<?> returnClass = methodConfig.getReturnClass();
          if (Void.class.isAssignableFrom(returnClass)) {
@@ -106,8 +107,14 @@ import java.util.Optional;
 
          Map<String, String> headers = responseHeader(res);
          String lengthStr = headers.entrySet().stream().filter(item -> StringUtils.equalsIgnoreCase(item.getKey(), "Content-Length")).map(Map.Entry::getValue).findAny().orElse("0");
+         long length;
+         Object tempData = res.getTempData();
+         if (tempData instanceof byte[])
+             length = ArrayUtils.getLength((byte[])tempData);
+         else
+             length = Integer.parseInt(lengthStr);
 
-         if (Integer.parseInt(lengthStr) == 0) {
+         if (length == 0) {
              try {
                  Constructor<?> constructor = returnClass.getConstructor();
                  Object o = constructor.newInstance();

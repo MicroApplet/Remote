@@ -36,7 +36,7 @@ import java.util.Optional;
  * @since 2023/10/19, &nbsp;&nbsp; <em>version:3.0.0</em>, &nbsp;&nbsp; <em>java version:8</em>
  */
 @Primary
-@RemoteSubProperty("netty.http")
+@RemoteSubProperty("netty")
 public final class NettyOctetStreamBodyLifeCycle extends OctetStreamBody.OctetStreamBodyLifeCycle {
     @Override
     protected void doBefore(Object data, RemoteMethodConfig methodConfig, RemoteReqContext req, RemoteResContext res, Object[] args) {

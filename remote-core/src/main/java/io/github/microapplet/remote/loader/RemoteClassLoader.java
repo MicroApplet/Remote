@@ -73,7 +73,8 @@ public class RemoteClassLoader extends ClassLoader {
         if (init)
             return;
         ClassLoader classLoader = classLoader();
-        log.info("RemoteClassLoader init, Target ClassLoader: {}", classLoader);
+        if (log.isDebugEnabled())
+            log.debug("RemoteClassLoader init, Target ClassLoader: {}", classLoader);
         try {
             Enumeration<URL> resources = classLoader.getResources(REMOTE_CLASSES_CONFIG);
             while (resources.hasMoreElements()) {
@@ -85,26 +86,30 @@ public class RemoteClassLoader extends ClassLoader {
                         continue;
                     List<String> list = IOUtils.readLines(inputStream, StandardCharsets.UTF_8);
                     for (String line : list) {
-                        if (StringUtils.isBlank(line) || StringUtils.startsWith(StringUtils.trim(line),"#"))
+                        if (StringUtils.isBlank(line) || StringUtils.startsWith(StringUtils.trim(line), "#"))
                             continue;
                         Class<?> aClass;
                         try {
-                            log.info("Load Class: {}", line);
+                            if (log.isDebugEnabled())
+                                log.info("Load Class: {}", line);
                             aClass = loadClass(line);
                             superClasses(aClass, aClass.getSuperclass());
                             superInterfaces(aClass, aClass.getInterfaces());
                         } catch (ClassNotFoundException e) {
-                            log.info("Load Class: {}, exception: {}", line,e.getMessage(),e);
+                            if (log.isDebugEnabled())
+                                log.info("Load Class: {}, exception: {}", line, e.getMessage(), e);
                         }
                     }
                 } catch (IOException e) {
-                    log.info("Load Url: {}, exception: {}", url, e.getMessage(),e);
+                    if (log.isDebugEnabled())
+                        log.info("Load Url: {}, exception: {}", url, e.getMessage(), e);
                 } finally {
                     IOUtils.closeQuietly(inputStream);
                 }
             }
         } catch (Throwable e) {
-            log.info("Load Resources: {}, exception: {}", REMOTE_CLASSES_CONFIG, e.getMessage(),e);
+            if (log.isDebugEnabled())
+                log.info("Load Resources: {}, exception: {}", REMOTE_CLASSES_CONFIG, e.getMessage(), e);
             throw new RuntimeException(e);
         }
         init = true;

@@ -22,7 +22,6 @@ import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.net.ssl.SSLContext;
-import java.io.Serial;
 import java.io.Serializable;
 import java.util.Objects;
 import java.util.Optional;
@@ -39,7 +38,6 @@ import java.util.Optional;
 @NoArgsConstructor
 @AllArgsConstructor
 public class RemoteNetNodeKey implements Serializable {
-    @Serial
     private static final long serialVersionUID = -2145609626837779738L;
 
     private String                          schema;

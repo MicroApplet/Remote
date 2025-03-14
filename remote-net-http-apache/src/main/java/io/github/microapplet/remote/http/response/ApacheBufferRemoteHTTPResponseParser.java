@@ -25,7 +25,7 @@ import javax.activation.MimeType;
 import javax.activation.MimeTypeParseException;
 import java.util.Map;
 
-@RemoteSubProperty("apache.http,https")
+@RemoteSubProperty("apache")
 public final class ApacheBufferRemoteHTTPResponseParser extends BufferRemoteNetResponseParser {
 
     @Override

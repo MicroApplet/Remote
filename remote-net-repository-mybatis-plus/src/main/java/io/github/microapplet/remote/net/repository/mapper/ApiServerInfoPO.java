@@ -23,14 +23,12 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import org.apache.commons.lang3.StringUtils;
 
-import java.io.Serial;
 import java.io.Serializable;
 
 @Data
 @TableName("t_rmt_net_svr")
 public class ApiServerInfoPO implements Serializable {
 
-    @Serial
     private static final long serialVersionUID = -1615501437940313064L;
 
     @TableId(type = IdType.ASSIGN_ID)

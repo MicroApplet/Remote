@@ -19,15 +19,13 @@ import io.github.microapplet.remote.annotation.RemoteLifeCycle;
 import io.github.microapplet.remote.context.RemoteMethodConfig;
 import io.github.microapplet.remote.context.RemoteMethodParameter;
 import io.github.microapplet.remote.http.annotation.lifecycle.AbstractFormDataLifeCycle;
+//import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.InputStream;
 import java.lang.annotation.*;
 import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * 文件上传处理
@@ -53,17 +51,9 @@ public @interface FormData {
 
         @Override
         public void doInit(RemoteMethodConfig methodConfig, RemoteMethodParameter methodParameter, FormData annotation) {
-            Class<?> clazz = methodParameter.getClazz();
-            if (File.class.isAssignableFrom(clazz) || byte[].class.isAssignableFrom(clazz) || InputStream.class.isAssignableFrom(clazz) || Map.class.isAssignableFrom(clazz) || List.class.isAssignableFrom(clazz)){
-                List<RemoteMethodParameter> parameters = methodConfig.config(FORM_DATA_CONFIG);
-                if (Objects.isNull(parameters)){
-                    parameters = new ArrayList<>();
-                }
-                parameters.add(methodParameter);
-                methodConfig.config(FORM_DATA_CONFIG, parameters);
-            }
-            else
-                throw new IllegalStateException("Form Data Request Type: " + methodParameter.getName() + " must be File, byte[], InputStream or Map");
+            List<RemoteMethodParameter> parameters = Optional.ofNullable(methodConfig.config(FORM_DATA_CONFIG)).orElseGet(ArrayList::new);
+            parameters.add(methodParameter);
+            methodConfig.config(FORM_DATA_CONFIG, parameters);
         }
     }
 }

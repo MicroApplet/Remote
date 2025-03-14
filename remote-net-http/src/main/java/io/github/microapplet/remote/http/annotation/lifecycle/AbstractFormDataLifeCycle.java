@@ -58,9 +58,9 @@ import java.util.*;
      }
 
       private static void addFormData(RemoteMethodConfig methodConfig, boolean attribute, String mimeType, Class<?> clazz, Object body, String name, List<UploadAttributeWrapper> attributes, List<UploadByteArrayWrapper> contents, List<LogFunction> functions) {
-          //noinspection rawtypes
-         if (body instanceof List list) {
-             for (Object o : list) {
+         if (body instanceof List) {
+             //noinspection rawtypes
+             for (Object o :(List) body) {
                  if (Objects.isNull(o))
                      continue;
                  addFormData(methodConfig, attribute, mimeType, o.getClass(), o, name, attributes, contents, functions);
@@ -94,17 +94,17 @@ import java.util.*;
 
          UploadByteArrayWrapper wrapper = body instanceof UploadByteArrayWrapper ? (UploadByteArrayWrapper) body : UploadByteArrayWrapper.create();
 
-         if (body instanceof File file) {
-             wrapper.withContent(file);
+         if (body instanceof File) {
+             wrapper.withContent((File) body);
          }
          if (body instanceof byte[]){
              wrapper.withContent((byte[]) body);
          }
-         if (body instanceof MultipartFile file){
-             wrapper.withContent(file);
+         if (body instanceof MultipartFile){
+             wrapper.withContent((MultipartFile) body);
          }
-         if (body instanceof InputStream inputStream) {
-             wrapper.withContent(inputStream);
+         if (body instanceof InputStream) {
+             wrapper.withContent((InputStream) body);
          }
 
          wrapper.withName(name);
