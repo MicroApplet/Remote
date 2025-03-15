@@ -203,7 +203,15 @@
                 <artifactId>maven-release-plugin</artifactId>
                 <version>3.0.1</version>
                 <configuration>
+                    <!-- 自动生成 release 版本号（如 1.0.0 → 1.0.1-SNAPSHOT） -->
                     <autoVersionSubmodules>true</autoVersionSubmodules>
+                    <!-- 定义版本递增策略 -->
+                    <!--suppress MavenModelInspection, MybatisXMapperXmlInspection -->
+                    <releaseVersion>${releaseVersion}</releaseVersion>
+                    <!--suppress MavenModelInspection, MybatisXMapperXmlInspection -->
+                    <developmentVersion>${developmentVersion}</developmentVersion>
+                    <!-- 自动生成 Tag 名称（默认格式：项目名-版本号） -->
+                    <tagNameFormat>v@{project.version}</tagNameFormat>
                     <useReleaseProfile>false</useReleaseProfile>
                     <releaseProfiles>release</releaseProfiles>
                     <goals>deploy</goals>
