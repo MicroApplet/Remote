@@ -20,7 +20,7 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>io.gitee.asialjim</groupId>
+                <groupId>io.github.microapplet</groupId>
                 <artifactId>remote-zen-pom</artifactId>
                 <version>${remote.version}</version>
                 <type>pom</type>
