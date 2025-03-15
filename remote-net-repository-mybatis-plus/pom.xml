@@ -40,6 +40,8 @@
             <artifactId>spring-data-redis</artifactId>
             <scope>provided</scope>
         </dependency>
+      
+       
         <dependency>
             <groupId>com.baomidou</groupId>
             <artifactId>mybatis-plus-boot-starter</artifactId>
