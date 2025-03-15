@@ -21,7 +21,7 @@
 
     <groupId>io.github.microapplet</groupId>
     <artifactId>remote</artifactId>
-    <version>1.0.1-SNAPSHOT</version>
+    <version>1.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>Remote</name>
     <url>https://github.com/MicroApplet/Remote</url>
@@ -206,9 +206,9 @@
                     <!-- 自动生成 release 版本号（如 1.0.0 → 1.0.1-SNAPSHOT） -->
                     <autoVersionSubmodules>true</autoVersionSubmodules>
                     <!-- 定义版本递增策略 -->
-                    <!--suppress MavenModelInspection, MybatisXMapperXmlInspection -->
+                    <!--suppress MavenModelInspection, MybatisXMapperXmlInspection, MybatisPlusMapperXmlInspection -->
                     <releaseVersion>${releaseVersion}</releaseVersion>
-                    <!--suppress MavenModelInspection, MybatisXMapperXmlInspection -->
+                    <!--suppress MavenModelInspection, MybatisXMapperXmlInspection, MybatisPlusMapperXmlInspection -->
                     <developmentVersion>${developmentVersion}</developmentVersion>
                     <!-- 自动生成 Tag 名称（默认格式：项目名-版本号） -->
                     <tagNameFormat>v@{project.version}</tagNameFormat>
