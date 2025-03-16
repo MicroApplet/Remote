@@ -11,12 +11,12 @@
  # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  # See the License for the specific language governing permissions and
  # limitations under the License.
-io.github.microapplet.remote.http.annotation.NettyFormDataLifeCycle
-io.github.microapplet.remote.http.annotation.NettyJsonBodyLifeCycle
-io.github.microapplet.remote.http.annotation.NettyUrlEncodedBodyLifeCycle
-io.github.microapplet.remote.http.annotation.NettyOctetStreamBodyLifeCycle
-io.github.microapplet.remote.http.annotation.NettyXmlBodyLifeCycle
-io.github.microapplet.remote.http.annotation.NettyHttpProcessLifeCycle
-io.github.microapplet.remote.http.response.NettyTextPlainRemoteHTTPResponseParser
-io.github.microapplet.remote.http.response.NettyBufferRemoteHTTPResponseParser
-io.github.microapplet.remote.http.annotation.NettyHTTPSslLifeCycle
+com.asialjim.microapplet.remote.http.annotation.NettyFormDataLifeCycle
+com.asialjim.microapplet.remote.http.annotation.NettyJsonBodyLifeCycle
+com.asialjim.microapplet.remote.http.annotation.NettyUrlEncodedBodyLifeCycle
+com.asialjim.microapplet.remote.http.annotation.NettyOctetStreamBodyLifeCycle
+com.asialjim.microapplet.remote.http.annotation.NettyXmlBodyLifeCycle
+com.asialjim.microapplet.remote.http.annotation.NettyHttpProcessLifeCycle
+com.asialjim.microapplet.remote.http.response.NettyTextPlainRemoteHTTPResponseParser
+com.asialjim.microapplet.remote.http.response.NettyBufferRemoteHTTPResponseParser
+com.asialjim.microapplet.remote.http.annotation.NettyHTTPSslLifeCycle
