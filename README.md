@@ -25,7 +25,7 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>io.github.microapplet</groupId>
+                <groupId>com.asialjim.microapplet</groupId>
                 <artifactId>remote-zen-pom</artifactId>
                 <version>${remote.version}</version>
                 <scope>import</scope>
@@ -37,7 +37,7 @@
     <!--按需要引入相关库如：构建 http 客户端引入-->
     <dependencies>
         <dependency>
-            <groupId>io.github.microapplet</groupId>
+            <groupId>com.asialjim.microapplet</groupId>
             <artifactId>remote-net-http</artifactId>
         </dependency>
     </dependencies>

@@ -11,12 +11,12 @@
  # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  # See the License for the specific language governing permissions and
  # limitations under the License.
-io.github.microapplet.remote.http.annotation.ApacheFormDataLifeCycle
-io.github.microapplet.remote.http.annotation.ApacheJsonBodyLifeCycle
-io.github.microapplet.remote.http.annotation.ApacheUrlEncodedBodyLifeCycle
-io.github.microapplet.remote.http.annotation.ApacheOctetStreamBodyLifeCycle
-io.github.microapplet.remote.http.annotation.ApacheHTTPSslLifeCycle
-io.github.microapplet.remote.http.annotation.ApacheXmlBodyLifeCycle
-io.github.microapplet.remote.http.annotation.ApacheHttpProcessLifeCycle
-io.github.microapplet.remote.http.response.ApacheTextPlainRemoteHTTPResponseParser
-io.github.microapplet.remote.http.response.ApacheBufferRemoteHTTPResponseParser
+com.asialjim.microapplet.remote.http.annotation.ApacheFormDataLifeCycle
+com.asialjim.microapplet.remote.http.annotation.ApacheJsonBodyLifeCycle
+com.asialjim.microapplet.remote.http.annotation.ApacheUrlEncodedBodyLifeCycle
+com.asialjim.microapplet.remote.http.annotation.ApacheOctetStreamBodyLifeCycle
+com.asialjim.microapplet.remote.http.annotation.ApacheHTTPSslLifeCycle
+com.asialjim.microapplet.remote.http.annotation.ApacheXmlBodyLifeCycle
+com.asialjim.microapplet.remote.http.annotation.ApacheHttpProcessLifeCycle
+com.asialjim.microapplet.remote.http.response.ApacheTextPlainRemoteHTTPResponseParser
+com.asialjim.microapplet.remote.http.response.ApacheBufferRemoteHTTPResponseParser
