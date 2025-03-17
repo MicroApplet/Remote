@@ -283,6 +283,9 @@
                     <execution>
                         <id>sign-artifacts</id>
                         <phase>verify</phase>
+                        <goals>
+                            <goal>sign</goal>
+                        </goals>
                     </execution>
                 </executions>
             </plugin>
@@ -308,5 +311,6 @@
             </plugin>
         </plugins>
     </build>
+
 
 </project>
