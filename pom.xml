@@ -152,6 +152,7 @@
     </dependencies>
 
 
+
     <build>
         <!--发布到maven 中央仓库-->
         <plugins>
@@ -187,7 +188,7 @@
                     <goals>deploy</goals>
                     <!-- 在准备阶段先执行版本替换 -->
                     <preparationGoals>
-                        clean versions:use-release verify
+                        clean versions:use-releases verify
                     </preparationGoals>
                 </configuration>
             </plugin>
