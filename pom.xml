@@ -307,4 +307,63 @@
         </plugins>
     </build>
 
+
+    <profiles>
+        <profile>
+            <id>update-snapshots-only</id>
+            <build>
+                <plugins>
+                    <!-- 使用 GMaven 插件动态收集快照属性 -->
+                    <plugin>
+                        <groupId>org.codehaus.gmaven</groupId>
+                        <artifactId>gmaven-plugin</artifactId>
+                        <version>1.5</version>
+                        <executions>
+                            <execution>
+                                <phase>initialize</phase>
+                                <goals>
+                                    <goal>execute</goal>
+                                </goals>
+                                <configuration>
+                                    <source>
+                                        def snapProps = project.properties.entrySet()
+                                                .findAll { it.value?.endsWith('-SNAPSHOT') }
+                                                .collect { it.key }
+                                        project.properties.snapshotProperties = snapProps.join(',')
+                                    </source>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <!-- 配置 versions-maven-plugin 仅更新快照属性 -->
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>versions-maven-plugin</artifactId>
+                        <version>2.16.2</version>
+                        <configuration>
+                            <generateBackupPoms>false</generateBackupPoms>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>update-properties</goal>
+                                </goals>
+                                <configuration>
+                                    <!-- 包含动态获取的快照属性 -->
+                                    <!--suppress MybatisXMapperXmlInspection, MavenModelInspection -->
+                                    <includeProperties>${snapshotProperties}</includeProperties>
+                                    <!-- 禁止更新到快照版本 -->
+                                    <allowSnapshots>false</allowSnapshots>
+                                    <processDependencyManagement>true</processDependencyManagement>
+                                    <processDependencies>true</processDependencies>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
+
 </project>
