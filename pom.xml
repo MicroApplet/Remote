@@ -151,17 +151,6 @@
         </dependency>
     </dependencies>
 
-    <distributionManagement>
-        <snapshotRepository>
-            <id>ossrh</id>
-            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-        </snapshotRepository>
-        <repository>
-            <id>ossrh</id>
-            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-        </repository>
-    </distributionManagement>
-
     <build>
         <!--发布到maven 中央仓库-->
         <plugins>
@@ -171,7 +160,7 @@
                 <version>0.7.0</version>
                 <extensions>true</extensions>
                 <configuration>
-                    <publishingServerId>central</publishingServerId>
+                    <publishingServerId>ossrh</publishingServerId>
                     <autoPublish>true</autoPublish>
                     <waitUntil>published</waitUntil>
                 </configuration>
@@ -206,6 +195,11 @@
                     <useReleaseProfile>false</useReleaseProfile>
                     <releaseProfiles>release</releaseProfiles>
                     <goals>deploy</goals>
+                    <!-- 在准备阶段先执行版本替换 -->
+                    <preparationGoals>
+                        <!--                        clean versions:use-release verify-->
+                        clean versions:update-properties verify
+                    </preparationGoals>
                 </configuration>
             </plugin>
 
@@ -262,6 +256,20 @@
                 <configuration>
                     <generateBackupPoms>false</generateBackupPoms>
                 </configuration>
+                <executions>
+                    <execution>
+                        <id>replace-snapshots</id>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>use-releases</goal>
+                        </goals>
+                        <configuration>
+                            <processDependencyManagement>true</processDependencyManagement>
+                            <processDependencies>true</processDependencies>
+                            <failIfNotReplaced>true</failIfNotReplaced>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
 
             <!-- 签名 -->
