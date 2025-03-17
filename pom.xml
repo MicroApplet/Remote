@@ -89,9 +89,9 @@
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
-        <spring-boot.version>3.4.3</spring-boot.version>
+        <spring-boot.version>2.7.18</spring-boot.version>
         <mybatis-plus.version>3.5.10.1</mybatis-plus.version>
-        <mybatis-flex.version>1.10.8</mybatis-flex.version>
+        <mybatis-flex.version>1.9.4</mybatis-flex.version>
     </properties>
 
     <dependencyManagement>
