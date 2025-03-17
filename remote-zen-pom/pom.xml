@@ -65,6 +65,11 @@
             </dependency>
             <dependency>
                 <groupId>com.asialjim.microapplet</groupId>
+                <artifactId>remote-net-repository-mybatis-flex</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.asialjim.microapplet</groupId>
                 <artifactId>remote-net-repository-mybatis-plus</artifactId>
                 <version>${project.version}</version>
             </dependency>

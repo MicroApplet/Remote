@@ -9,8 +9,7 @@ NEW_VERSION=$(echo $RELEASE_VERSION | awk -F. '{$NF = $NF + 1; print $0}' | sed 
 mvn release:prepare -B \
   -DreleaseVersion=$RELEASE_VERSION \
   -DdevelopmentVersion=$NEW_VERSION \
-  -Dtag=v$RELEASE_VERSION \
-  -Pupdate-snapshots-only
+  -Dtag=v$RELEASE_VERSION
 
 mvn release:perform -B
 

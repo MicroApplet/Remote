@@ -89,9 +89,9 @@
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
-        <spring-boot.version>3.4.3</spring-boot.version>
+        <spring-boot.version>2.7.18</spring-boot.version>
         <mybatis-plus.version>3.5.10.1</mybatis-plus.version>
-        <mybatis-flex.version>1.10.8</mybatis-flex.version>
+        <mybatis-flex.version>1.9.4</mybatis-flex.version>
     </properties>
 
     <dependencyManagement>
@@ -167,6 +167,55 @@
                 </configuration>
             </plugin>
 
+
+            <!-- 版本号管理 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-release-plugin</artifactId>
+                <configuration>
+                    <!-- 自动生成 release 版本号（如 1.0.0 → 1.0.1-SNAPSHOT） -->
+                    <autoVersionSubmodules>true</autoVersionSubmodules>
+                    <!-- 定义版本递增策略 -->
+                    <!--suppress MavenModelInspection, MybatisXMapperXmlInspection, UnresolvedMavenProperty -->
+                    <releaseVersion>${releaseVersion}</releaseVersion>
+                    <!--suppress MavenModelInspection, MybatisXMapperXmlInspection, UnresolvedMavenProperty -->
+                    <developmentVersion>${developmentVersion}</developmentVersion>
+                    <!-- 自动生成 Tag 名称（默认格式：项目名-版本号） -->
+                    <tagNameFormat>v@{project.version}</tagNameFormat>
+                    <useReleaseProfile>false</useReleaseProfile>
+                    <releaseProfiles>release</releaseProfiles>
+                    <goals>deploy</goals>
+                    <!-- 在准备阶段先执行版本替换 -->
+                    <preparationGoals>
+                        clean versions:use-release verify
+                    </preparationGoals>
+                </configuration>
+            </plugin>
+
+            <!-- 配置 versions-maven-plugin 仅更新快照属性 -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>versions-maven-plugin</artifactId>
+                <version>2.16.2</version>
+                <configuration>
+                    <generateBackupPoms>false</generateBackupPoms>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>use-releases</goal>
+                        </goals>
+                        <configuration>
+                            <!-- 禁止更新到快照版本 -->
+                            <allowSnapshots>false</allowSnapshots>
+                            <processDependencyManagement>true</processDependencyManagement>
+                            <processDependencies>true</processDependencies>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+
             <!-- 用于执行单元测试的核心插件 -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -223,15 +272,6 @@
                 </configuration>
             </plugin>
 
-            <!-- 手动管理版本号工具  -->
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>versions-maven-plugin</artifactId>
-                <version>2.16.2</version>
-                <configuration>
-                    <generateBackupPoms>false</generateBackupPoms>
-                </configuration>
-            </plugin>
 
             <!-- 签名 -->
             <plugin>
@@ -267,90 +307,5 @@
             </plugin>
         </plugins>
     </build>
-
-    <profiles>
-        <profile>
-            <id>update-snapshots-only</id>
-            <build>
-                <plugins>
-                    <!-- 使用 GMaven 插件动态收集快照属性 -->
-                    <plugin>
-                        <groupId>org.codehaus.gmaven</groupId>
-                        <artifactId>gmaven-plugin</artifactId>
-                        <version>1.5</version>
-                        <executions>
-                            <execution>
-                                <phase>initialize</phase>
-                                <goals>
-                                    <goal>execute</goal>
-                                </goals>
-                                <configuration>
-                                    <source>
-                                        def snapProps = project.properties.entrySet()
-                                                .findAll { it.value?.endsWith('-SNAPSHOT') }
-                                                .collect { it.key }
-                                        project.properties.snapshotProperties = snapProps.join(',')
-                                    </source>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-
-                    <!-- 版本号管理 -->
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-release-plugin</artifactId>
-                        <configuration>
-                            <!-- 自动生成 release 版本号（如 1.0.0 → 1.0.1-SNAPSHOT） -->
-                            <autoVersionSubmodules>true</autoVersionSubmodules>
-                            <!-- 定义版本递增策略 -->
-                            <!--suppress MavenModelInspection, MybatisXMapperXmlInspection, UnresolvedMavenProperty -->
-                            <releaseVersion>${releaseVersion}</releaseVersion>
-                            <!--suppress MavenModelInspection, MybatisXMapperXmlInspection, UnresolvedMavenProperty -->
-                            <developmentVersion>${developmentVersion}</developmentVersion>
-                            <!-- 自动生成 Tag 名称（默认格式：项目名-版本号） -->
-                            <tagNameFormat>v@{project.version}</tagNameFormat>
-                            <useReleaseProfile>false</useReleaseProfile>
-                            <releaseProfiles>release</releaseProfiles>
-                            <goals>deploy</goals>
-                            <!-- 在准备阶段先执行版本替换 -->
-                            <preparationGoals>
-                                <!-- clean versions:use-release verify-->
-                                clean versions:update-properties verify
-                            </preparationGoals>
-                        </configuration>
-                    </plugin>
-
-                    <!-- 配置 versions-maven-plugin 仅更新快照属性 -->
-                    <plugin>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>versions-maven-plugin</artifactId>
-                        <version>2.16.2</version>
-                        <configuration>
-                            <generateBackupPoms>false</generateBackupPoms>
-                        </configuration>
-                        <executions>
-                            <execution>
-                                <goals>
-                                    <goal>update-properties</goal>
-                                </goals>
-                                <configuration>
-                                    <!-- 包含动态获取的快照属性 -->
-                                    <!--suppress MybatisXMapperXmlInspection, MavenModelInspection -->
-                                    <includeProperties>${snapshotProperties}</includeProperties>
-                                    <!-- 禁止更新到快照版本 -->
-                                    <allowSnapshots>false</allowSnapshots>
-                                    <processDependencyManagement>true</processDependencyManagement>
-                                    <processDependencies>true</processDependencies>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
-
-
 
 </project>
