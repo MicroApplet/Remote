@@ -21,7 +21,7 @@
 
     <groupId>com.asialjim.microapplet</groupId>
     <artifactId>remote</artifactId>
-    <version>1.0.1-SNAPSHOT</version>
+    <version>1.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>Remote</name>
     <url>https://github.com/MicroApplet/Remote</url>
@@ -151,8 +151,6 @@
         </dependency>
     </dependencies>
 
-
-
     <build>
         <!--发布到maven 中央仓库-->
         <plugins>
@@ -199,7 +197,11 @@
                 <artifactId>versions-maven-plugin</artifactId>
                 <version>2.16.2</version>
                 <configuration>
+                    <allowSnapshots>false</allowSnapshots>
                     <generateBackupPoms>false</generateBackupPoms>
+                    <processDependencyManagement>true</processDependencyManagement>
+                    <processDependencies>true</processDependencies>
+                    <processAllModules>true</processAllModules>
                 </configuration>
                 <executions>
                     <execution>
