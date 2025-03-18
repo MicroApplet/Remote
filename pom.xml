@@ -150,7 +150,6 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-
     <build>
         <!--发布到maven 中央仓库-->
         <plugins>
@@ -313,6 +312,5 @@
             </plugin>
         </plugins>
     </build>
-
 
 </project>
