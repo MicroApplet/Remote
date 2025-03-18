@@ -12,6 +12,3 @@ mvn release:prepare -B \
   -Dtag=v$RELEASE_VERSION
 
 mvn release:perform -B
-
-# 推送到 Git 仓库（确保 Docker 容器有权限）
-git push origin main --tags
