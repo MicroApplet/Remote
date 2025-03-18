@@ -150,6 +150,8 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+
+
     <build>
         <!--发布到maven 中央仓库-->
         <plugins>
@@ -162,6 +164,8 @@
                     <publishingServerId>ossrh</publishingServerId>
                     <autoPublish>true</autoPublish>
                     <deploymentName>Remote</deploymentName>
+                    <ignorePublishedComponents>true</ignorePublishedComponents>
+                    <waitUntil>validated</waitUntil>
                 </configuration>
             </plugin>
 
