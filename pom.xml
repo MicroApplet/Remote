@@ -164,6 +164,7 @@
                 <configuration>
                     <publishingServerId>ossrh</publishingServerId>
                     <autoPublish>true</autoPublish>
+                    <deploymentName>Remote</deploymentName>
                     <waitUntil>published</waitUntil>
                 </configuration>
             </plugin>
