@@ -94,6 +94,25 @@
         <mybatis-flex.version>1.9.4</mybatis-flex.version>
     </properties>
 
+    <profiles>
+        <profile>
+            <id>dev</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <com.asialjim.microapplet>${project.version}</com.asialjim.microapplet>
+            </properties>
+        </profile>
+        <profile>
+            <id>release</id>
+            <properties>
+                <!--suppress XmlUnresolvedReference -->
+                <com.asialjim.microapplet>${asialjimVersion}</com.asialjim.microapplet>
+            </properties>
+        </profile>
+    </profiles>
+
     <dependencyManagement>
         <dependencies>
             <dependency>
@@ -118,6 +137,14 @@
                 <scope>import</scope>
             </dependency>
             <dependency>
+                <groupId>com.asialjim.microapplet</groupId>
+                <artifactId>commons-triple-dependencies</artifactId>
+                <version>${com.asialjim.microapplet}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <dependency>
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-collections4</artifactId>
                 <version>4.4</version>
@@ -127,6 +154,7 @@
                 <artifactId>commons-io</artifactId>
                 <version>2.15.1</version>
             </dependency>
+
         </dependencies>
     </dependencyManagement>
 
@@ -151,7 +179,6 @@
         </dependency>
     </dependencies>
 
-
     <build>
         <!--发布到maven 中央仓库-->
         <plugins>
@@ -163,58 +190,91 @@
                 <configuration>
                     <publishingServerId>ossrh</publishingServerId>
                     <autoPublish>true</autoPublish>
-                    <deploymentName>Remote</deploymentName>
+                    <deploymentName>WeChat</deploymentName>
                     <ignorePublishedComponents>true</ignorePublishedComponents>
                     <waitUntil>validated</waitUntil>
                 </configuration>
             </plugin>
 
 
-            <!-- 版本号管理 -->
+            <!-- 版本发布核心插件 -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-release-plugin</artifactId>
                 <configuration>
-                    <!-- 自动生成 release 版本号（如 1.0.0 → 1.0.1-SNAPSHOT） -->
                     <autoVersionSubmodules>true</autoVersionSubmodules>
-                    <!-- 定义版本递增策略 -->
-                    <!--suppress MavenModelInspection, MybatisXMapperXmlInspection, UnresolvedMavenProperty -->
-                    <releaseVersion>${releaseVersion}</releaseVersion>
-                    <!--suppress MavenModelInspection, MybatisXMapperXmlInspection, UnresolvedMavenProperty -->
-                    <developmentVersion>${developmentVersion}</developmentVersion>
-                    <!-- 自动生成 Tag 名称（默认格式：项目名-版本号） -->
                     <tagNameFormat>v@{project.version}</tagNameFormat>
                     <useReleaseProfile>false</useReleaseProfile>
                     <releaseProfiles>release</releaseProfiles>
+                    <!-- 正式版本号 -->
+                    <!--suppress MavenModelInspection, MybatisXMapperXmlInspection, UnresolvedMavenProperty -->
+                    <releaseVersion>${releaseVersion}</releaseVersion>
+                    <!-- 下一个开发版本号 -->
+                    <!--suppress MavenModelInspection, MybatisXMapperXmlInspection, UnresolvedMavenProperty -->
+                    <developmentVersion>${developmentVersion}</developmentVersion>
                     <goals>deploy</goals>
-                    <!-- 在准备阶段先执行版本替换 -->
+                    <!-- 强制更新所有依赖版本 -->
                     <preparationGoals>
-                        clean versions:use-releases verify
+                        clean
+                        versions:use-releases
+                        versions:update-properties
+                        versions:update-parent
+                        install
+                        verify
                     </preparationGoals>
                 </configuration>
             </plugin>
 
-            <!-- 配置 versions-maven-plugin 仅更新快照属性 -->
+            <!-- 版本号管理增强插件 -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>versions-maven-plugin</artifactId>
                 <version>2.16.2</version>
                 <configuration>
-                    <allowSnapshots>false</allowSnapshots>
                     <generateBackupPoms>false</generateBackupPoms>
+                    <processProperties>true</processProperties>
                     <processDependencyManagement>true</processDependencyManagement>
                     <processDependencies>true</processDependencies>
+                    <processParent>true</processParent>
                     <processAllModules>true</processAllModules>
+                    <allowSnapshots>false</allowSnapshots> <!-- 发布阶段禁止SNAPSHOT -->
                 </configuration>
                 <executions>
+                    <!-- 强制更新父版本和子模块 -->
                     <execution>
+                        <id>pre-release-update</id>
+                        <phase>validate</phase>
                         <goals>
-                            <goal>use-releases</goal>
+                            <goal>update-parent</goal>
+                            <goal>update-child-modules</goal>
+                            <goal>update-properties</goal>
                         </goals>
+                        <configuration>
+                            <properties>
+                                <!--suppress MavenModelInspection, MybatisPlusMapperXmlInspection, MybatisXMapperXmlInspection -->
+                                <com.asialjim.microapplet>${asialjimVersion}</com.asialjim.microapplet>
+                            </properties>
+                        </configuration>
+                    </execution>
+                    <!-- 发布后更新到下一个SNAPSHOT版本 -->
+                    <execution>
+                        <id>post-release-update</id>
+                        <!--suppress MybatisXMapperXmlInspection, MybatisPlusMapperXmlInspection, MavenModelInspection -->
+                        <phase>post-release</phase>
+                        <goals>
+                            <goal>update-parent</goal>
+                            <goal>update-child-modules</goal>
+                            <goal>update-properties</goal>
+                        </goals>
+                        <configuration>
+                            <properties>
+                                <!--suppress MavenModelInspection, MybatisPlusMapperXmlInspection, MybatisXMapperXmlInspection -->
+                                <com.asialjim.microapplet>${developmentVersion}</com.asialjim.microapplet>
+                            </properties>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>
-
 
             <!-- 用于执行单元测试的核心插件 -->
             <plugin>
@@ -310,6 +370,5 @@
             </plugin>
         </plugins>
     </build>
-
 
 </project>
