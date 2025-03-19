@@ -4,5 +4,7 @@ RELEASE_VERSION=${CURRENT_VERSION%-SNAPSHOT}
 NEW_VERSION=$(echo $RELEASE_VERSION | awk -F. '{$NF = $NF + 1; print $0}' | sed 's/ /./g')-SNAPSHOT
 
 # 执行自动化发布
+mvn clean install
 mvn clean release:prepare -B -DreleaseVersion=$RELEASE_VERSION -DdevelopmentVersion=$NEW_VERSION -DasialjimVersion=$RELEASE_VERSION -P release,!dev
+mvn install
 mvn release:perform -B

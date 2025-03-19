@@ -21,7 +21,7 @@
 
     <groupId>com.asialjim.microapplet</groupId>
     <artifactId>remote</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>Remote</name>
     <url>https://github.com/MicroApplet/Remote</url>
@@ -190,7 +190,7 @@
                 <configuration>
                     <publishingServerId>ossrh</publishingServerId>
                     <autoPublish>true</autoPublish>
-                    <deploymentName>WeChat</deploymentName>
+                    <deploymentName>Remote</deploymentName>
                     <ignorePublishedComponents>true</ignorePublishedComponents>
                     <waitUntil>validated</waitUntil>
                 </configuration>
@@ -218,9 +218,7 @@
                     <preparationGoals>
                         clean
                         versions:use-releases
-                        versions:update-properties
                         versions:update-parent
-                        install
                         verify
                     </preparationGoals>
                 </configuration>
@@ -248,14 +246,7 @@
                         <goals>
                             <goal>update-parent</goal>
                             <goal>update-child-modules</goal>
-                            <goal>update-properties</goal>
                         </goals>
-                        <configuration>
-                            <properties>
-                                <!--suppress MavenModelInspection, MybatisPlusMapperXmlInspection, MybatisXMapperXmlInspection -->
-                                <com.asialjim.microapplet>${asialjimVersion}</com.asialjim.microapplet>
-                            </properties>
-                        </configuration>
                     </execution>
                     <!-- 发布后更新到下一个SNAPSHOT版本 -->
                     <execution>
@@ -265,14 +256,7 @@
                         <goals>
                             <goal>update-parent</goal>
                             <goal>update-child-modules</goal>
-                            <goal>update-properties</goal>
                         </goals>
-                        <configuration>
-                            <properties>
-                                <!--suppress MavenModelInspection, MybatisPlusMapperXmlInspection, MybatisXMapperXmlInspection -->
-                                <com.asialjim.microapplet>${developmentVersion}</com.asialjim.microapplet>
-                            </properties>
-                        </configuration>
                     </execution>
                 </executions>
             </plugin>
