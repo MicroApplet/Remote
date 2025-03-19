@@ -106,6 +106,12 @@
         </profile>
         <profile>
             <id>release</id>
+            <activation>
+                <!-- 可添加自动激活条件（可选） -->
+                <property>
+                    <name>asialjimVersion</name>
+                </property>
+            </activation>
             <properties>
                 <!--suppress XmlUnresolvedReference -->
                 <com.asialjim.microapplet>${asialjimVersion}</com.asialjim.microapplet>
@@ -205,8 +211,10 @@
                 <configuration>
                     <autoVersionSubmodules>true</autoVersionSubmodules>
                     <tagNameFormat>v@{project.version}</tagNameFormat>
-                    <useReleaseProfile>true</useReleaseProfile>
                     <releaseProfiles>release</releaseProfiles>
+                    <!-- 允许插件传递命令行参数 -->
+                    <!--suppress MavenModelInspection, MybatisXMapperXmlInspection, UnresolvedMavenProperty -->
+                    <arguments>-DasialjimVersion=${asialjimVersion}</arguments>
                     <!-- 正式版本号 -->
                     <!--suppress MavenModelInspection, MybatisXMapperXmlInspection, UnresolvedMavenProperty -->
                     <releaseVersion>${releaseVersion}</releaseVersion>
