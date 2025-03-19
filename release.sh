@@ -6,9 +6,9 @@ NEW_VERSION=$(echo $RELEASE_VERSION | awk -F. '{$NF = $NF + 1; print $0}' | sed 
 echo $CURRENT_VERSION
 echo $RELEASE_VERSION
 echo $NEW_VERSION
-echo 'mvn clean release:prepare -B -DreleaseVersion=$RELEASE_VERSION -DdevelopmentVersion=$NEW_VERSION -DasialjimVersion=$RELEASE_VERSION -P release,!dev'
+echo "mvn clean release:prepare -B -Prelease,!dev -DreleaseVersion=$RELEASE_VERSION -DdevelopmentVersion=$NEW_VERSION -DasialjimVersion=$RELEASE_VERSION"
 # 执行自动化发布
 mvn clean install
-mvn clean release:prepare -B -DreleaseVersion=$RELEASE_VERSION -DdevelopmentVersion=$NEW_VERSION -DasialjimVersion=$RELEASE_VERSION -P release,!dev
+mvn clean release:prepare -B -Prelease,!dev -DreleaseVersion=$RELEASE_VERSION -DdevelopmentVersion=$NEW_VERSION -DasialjimVersion=$RELEASE_VERSION
 mvn install
 mvn release:perform -B
