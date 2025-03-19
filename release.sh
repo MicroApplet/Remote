@@ -3,6 +3,9 @@ CURRENT_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdou
 RELEASE_VERSION=${CURRENT_VERSION%-SNAPSHOT}
 NEW_VERSION=$(echo $RELEASE_VERSION | awk -F. '{$NF = $NF + 1; print $0}' | sed 's/ /./g')-SNAPSHOT
 
+echo $CURRENT_VERSION
+echo $RELEASE_VERSION
+echo $NEW_VERSION
 # 执行自动化发布
 mvn clean install
 mvn clean release:prepare -B -DreleaseVersion=$RELEASE_VERSION -DdevelopmentVersion=$NEW_VERSION -DasialjimVersion=$RELEASE_VERSION -P release,!dev
