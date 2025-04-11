@@ -19,10 +19,17 @@ import org.springframework.context.annotation.Import;
 
 import java.lang.annotation.*;
 
+/**
+ * Remote Bean 扫描
+ *
+ * @author <a href="mailto:asialjim@hotmail.com">Asial Jim</a>
+ * @version 1.0
+ * @since 2025/4/11, &nbsp;&nbsp; <em>version:1.0</em>
+ */
 @Documented
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-@Import({RemoteBeanDefinitionRegistrar.class})
+@Import({RemoteBeanSelector.class})
 public @interface RemoteScan {
 
     String[] value();
