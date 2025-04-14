@@ -26,6 +26,13 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.io.Serializable;
 
+/**
+ * Remote 服务器信息管理
+ *
+ * @author <a href="mailto:asialjim@hotmail.com">Asial Jim</a>
+ * @version 1.0
+ * @since 2025/4/14, &nbsp;&nbsp; <em>version:1.0</em>
+ */
 @Data
 @Table("t_rmt_net_svr")
 public class ApiServerInfoPO implements Serializable {
