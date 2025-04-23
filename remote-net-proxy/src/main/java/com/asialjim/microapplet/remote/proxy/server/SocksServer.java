@@ -34,6 +34,7 @@ import org.apache.commons.lang3.StringUtils;
 @AllArgsConstructor
 @SuppressWarnings("unused")
 public final class SocksServer implements ProxyServer {
+
     private int boss;
     private int worker;
     private int port;
