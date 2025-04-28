@@ -352,7 +352,7 @@
                     <target>${maven.compiler.target}</target>
                     <encoding>UTF-8</encoding>
                     <compilerArgument>-parameters</compilerArgument>
-
+                    <!--
                     <annotationProcessorPaths>
                         <path>
                             <groupId>org.projectlombok</groupId>
@@ -360,6 +360,7 @@
                             <version>1.18.30</version>
                         </path>
                     </annotationProcessorPaths>
+                    -->
                 </configuration>
             </plugin>
 
