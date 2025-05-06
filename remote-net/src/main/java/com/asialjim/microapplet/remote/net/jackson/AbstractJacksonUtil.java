@@ -18,10 +18,8 @@ package com.asialjim.microapplet.remote.net.jackson;
 import com.ctc.wstx.api.WstxOutputProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.JavaType;
-import com.fasterxml.jackson.databind.MapperFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.*;
+import com.fasterxml.jackson.databind.node.NullNode;
 import com.fasterxml.jackson.databind.type.MapType;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.ser.ToXmlGenerator;
@@ -30,6 +28,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -254,6 +253,32 @@ public abstract class AbstractJacksonUtil {
         } catch (IOException e) {
             log.error("String Value: {} Deserialize to Object Exception: {}", stringValue, e.getMessage(), e);
             return null;
+        }
+    }
+
+    public static JsonNode readXmlTree(String body) {
+        try {
+            return XML_MAPPER.readTree(body);
+        } catch (Throwable t) {
+            if (log.isDebugEnabled())
+                log.error("String value:{} Deserializer to JsonNode Exception:{}", body, t.getMessage(), t);
+            else
+                //noinspection LoggingSimilarMessage
+                log.error("String value:{} Deserializer to JsonNode Exception:{}", body, t.getMessage());
+            return NullNode.instance;
+        }
+    }
+
+    public static JsonNode readXmlTree(InputStream body) {
+        try {
+            return XML_MAPPER.readTree(body);
+        } catch (Throwable t) {
+            if (log.isDebugEnabled())
+                log.error("String value:{} Deserializer to JsonNode Exception:{}", body, t.getMessage(), t);
+            else
+                //noinspection LoggingSimilarMessage
+                log.error("String value:{} Deserializer to JsonNode Exception:{}", body, t.getMessage());
+            return NullNode.instance;
         }
     }
 }
