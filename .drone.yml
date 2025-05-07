@@ -19,9 +19,11 @@ steps: # 定义流水线执行步骤，这些步骤将顺序执行
       - mvn clean package -Dmaven.test.skip=true -Dmaven.source.skip=true -Dmaven.javadoc.skip=true
       - pwd
       - ls -la
-      - cp remote-net-proxy/target/RemoteProxy.jar /app/build/RemoteProxy.jar
-      - cp *.sh /app/build
+      - cp run.sh /app/build
       - cp Dockerfile /app/build/Dockerfile
+      - cd /drone/src/remote-net-proxy
+      - ls -la
+      - cp /drone/src/remote-net-proxy/target/RemoteProxy.jar /app/build/RemoteProxy.jar
 
   - name: copy
     image: appleboy/drone-ssh # SSH工具镜像
