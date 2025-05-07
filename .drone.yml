@@ -47,8 +47,7 @@ steps: # 定义流水线执行步骤，这些步骤将顺序执行
       command_timeout: 5m # 远程执行命令超时时间
       script:
         - cd /app/build # 进入宿主机构建目录
-        - ssh -i /root/.ssh/secret.pem root@$ssh_host "rm -rf /home/remote/*"
-        - scp -i /root/.ssh/secret.pem /app/build/* root@$ssh_host:/home/remote
+        - sh copy.sh
 
   - name: start
     image: appleboy/drone-ssh # SSH工具镜像
