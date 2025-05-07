@@ -21,8 +21,34 @@ steps: # 定义流水线执行步骤，这些步骤将顺序执行
       - cp *.sh /app/build
       - cp Dockerfile /app/build/Dockerfile
 
-  - name: build-start
+  - name: copy
     image: appleboy/drone-ssh # SSH工具镜像
+    pull: if-not-exists
+    volumes: # 将容器内目录挂载到宿主机，仓库需要开启Trusted设置
+      - name: maven-build
+        path: /app/build # 将应用打包好的Jar和执行脚本挂载出来
+      - name: ssh-cache
+        path: /root/.ssh
+    environment:
+      - name: ssh_host
+        from_secret: ssh_host
+    settings:
+      host:
+        from_secret: host
+      username:
+        from_secret: username
+      password:
+        from_secret: password # 从Secret中读取SSH密码
+      port: 22 # 远程连接端口
+      command_timeout: 5m # 远程执行命令超时时间
+      script:
+        - cd /app/build # 进入宿主机构建目录
+        - ssh -i /root/.ssh/secret.pem root@$ssh_host "rm -rf /home/remote/*"
+        - scp -i /root/.ssh/secret.pem /app/build/* root@$ssh_host:/home/remote
+
+  - name: start
+    image: appleboy/drone-ssh # SSH工具镜像
+    pull: if-not-exists
     settings:
       host:
         from_secret: ssh_host
@@ -33,7 +59,7 @@ steps: # 定义流水线执行步骤，这些步骤将顺序执行
       port: 22 # 远程连接端口
       command_timeout: 5m # 远程执行命令超时时间
       script:
-        - cd /home/asialjim/.DroneImage/maven/build # 进入宿主机构建目录
+        - cd /home/remote # 进入宿主机构建目录
         - chmod +x run.sh # 更改为可执行脚本
         - ./run.sh # 运行脚本打包应用镜像并运行
 

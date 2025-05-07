@@ -1,6 +1,6 @@
 #指定基础镜像
 FROM openjdk:8u121-jre-alpine
-EXPOSE 80
+EXPOSE 13001
 COPY ./*.jar /
 # 赋予执行权限
 RUN chmod 755 -R /RemoteProxy.jar
