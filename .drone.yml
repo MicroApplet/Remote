@@ -21,7 +21,7 @@ steps: # 定义流水线执行步骤，这些步骤将顺序执行
       - ls -la
       - cp run.sh /app/build
       - cp Dockerfile /app/build/Dockerfile
-      - cd /drone/src/remote-net-proxy
+      - cd /drone/src/remote-net-proxy/target
       - ls -la
       - cp /drone/src/remote-net-proxy/target/RemoteProxy.jar /app/build/RemoteProxy.jar
 
