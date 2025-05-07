@@ -17,22 +17,13 @@ steps: # 定义流水线执行步骤，这些步骤将顺序执行
     commands: # 定义在Docker容器中执行的shell命令
       # 开始打包maven工程
       - mvn clean package -Dmaven.test.skip=true -Dmaven.source.skip=true -Dmaven.javadoc.skip=true
-      - pwd
-      - ls -la
       - cp run.sh /app/build
       - cp Dockerfile /app/build/Dockerfile
-      - cd /drone/src/remote-net-proxy/target
-      - ls -la
-      - cp /drone/src/remote-net-proxy/target/RemoteProxy.jar /app/build/RemoteProxy.jar
+      - cp remote-net-proxy/target/RemoteProxy.jar /app/build/RemoteProxy.jar
 
   - name: copy
     image: appleboy/drone-ssh # SSH工具镜像
     pull: if-not-exists
-    volumes: # 将容器内目录挂载到宿主机，仓库需要开启Trusted设置
-      - name: maven-build
-        path: /app/build # 将应用打包好的Jar和执行脚本挂载出来
-      - name: ssh-cache
-        path: /root/.ssh
     environment:
       ssh_host:
         from_secret: ssh_host
@@ -46,7 +37,7 @@ steps: # 定义流水线执行步骤，这些步骤将顺序执行
       port: 22 # 远程连接端口
       command_timeout: 5m # 远程执行命令超时时间
       script:
-        - cd /app/build # 进入宿主机构建目录
+        - cd /home/asialjim/.app/docker/gitee/MicroApplet/Remote # 进入宿主机构建目录
         - sh copy.sh
 
   - name: start
