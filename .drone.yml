@@ -1,6 +1,6 @@
 kind: pipeline
 type: docker
-name: gateway
+name: remote-proxy
 
 
 steps: # 定义流水线执行步骤，这些步骤将顺序执行
@@ -30,7 +30,7 @@ steps: # 定义流水线执行步骤，这些步骤将顺序执行
       - name: ssh-cache
         path: /root/.ssh
     environment:
-      - name: ssh_host
+      ssh_host:
         from_secret: ssh_host
     settings:
       host:
