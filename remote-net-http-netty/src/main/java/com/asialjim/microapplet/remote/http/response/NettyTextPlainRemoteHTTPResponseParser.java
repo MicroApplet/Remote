@@ -63,9 +63,4 @@ public final class NettyTextPlainRemoteHTTPResponseParser extends TextPlainRemot
 
         return StringUtils.isBlank(charsetName) ? StandardCharsets.UTF_8 : Charset.forName(charsetName);
     }
-
-    @Override
-    protected byte[] responseContent(RemoteResContext resContext) {
-        return (byte[]) resContext.getTempData();
-    }
 }

@@ -101,7 +101,7 @@ import java.util.*;
          }
 
          wrapper.withName(name);
-         functions.add(() -> log.info("\r\n\tRemote NET Req Form >>> Client:{} >>> {}", methodConfig.getRemoteName(),wrapper.logString()));
+         functions.add(() -> log.info("Remote NET Req Form >>> Client:{} >>> {}", methodConfig.getRemoteName(),wrapper.logString()));
          contents.add(wrapper);
      }
 
@@ -122,7 +122,7 @@ import java.util.*;
              bodyStr = AbstractJacksonUtil.writeValueAsString(body, mapper);
          }
          UploadAttributeWrapper wrapper = UploadAttributeWrapper.builder().name(name).value(bodyStr).contentType(mimeType).build();
-         functions.add(() -> log.info("\r\n\tRemote NET Req Form >>> Client:{} >>> Attribute: {}", methodConfig.getRemoteName(), wrapper));
+         functions.add(() -> log.info("Remote NET Req Form >>> Client:{} >>> Attribute: {}", methodConfig.getRemoteName(), wrapper));
          attributes.add(wrapper);
      }
 

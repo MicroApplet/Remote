@@ -110,6 +110,13 @@ public class RemoteHandlerContext {
     }
 
     public void before(Object data, RemoteMethodConfig methodConfig, RemoteReqContext req, RemoteResContext res, Object[] args) {
+
+        for (Before handler : beforeHandlers) {
+            if (Objects.isNull(handler))
+                continue;
+            handler.before(data, methodConfig, req, res, args);
+        }
+
         for (Integer index : callbackIndex) {
             if (index < 0)
                 continue;
@@ -121,16 +128,17 @@ public class RemoteHandlerContext {
             if (arg instanceof Before)
                 ((Before) arg).before(data, methodConfig, req, res, args);
         }
-
-        for (Before handler : beforeHandlers) {
-            if (Objects.isNull(handler))
-                continue;
-            handler.before(data, methodConfig, req, res, args);
-        }
     }
 
 
     public void invoke(Object data, RemoteMethodConfig methodConfig, RemoteReqContext req, RemoteResContext res, Object[] args) {
+
+        for (Invoke handler : invokeHandlers) {
+            if (Objects.isNull(handler))
+                continue;
+            handler.invoke(data, methodConfig, req, res, args);
+        }
+
         for (Integer index : callbackIndex) {
             Object arg = args[index];
             if (Objects.isNull(arg)) continue;
@@ -138,15 +146,14 @@ public class RemoteHandlerContext {
             if (arg instanceof Invoke)
                 ((Invoke) arg).invoke(data, methodConfig, req, res, args);
         }
-
-        for (Invoke handler : invokeHandlers) {
-            if (Objects.isNull(handler))
-                continue;
-            handler.invoke(data, methodConfig, req, res, args);
-        }
     }
 
     public void after(Object data, RemoteMethodConfig methodConfig, RemoteReqContext req, RemoteResContext res, Object[] args) {
+        for (After handler : afterHandlers) {
+            if (Objects.isNull(handler)) continue;
+            handler.after(data, methodConfig, req, res, args);
+        }
+
         for (Integer index : callbackIndex) {
             Object arg = args[index];
             if (Objects.isNull(arg)) continue;
@@ -154,11 +161,6 @@ public class RemoteHandlerContext {
             if (arg instanceof After) {
                 ((After) arg).after(data, methodConfig, req, res, args);
             }
-        }
-
-        for (After handler : afterHandlers) {
-            if (Objects.isNull(handler)) continue;
-            handler.after(data, methodConfig, req, res, args);
         }
     }
 
@@ -237,13 +239,6 @@ public class RemoteHandlerContext {
     }
 
     public boolean retryWhen(Object data, RemoteMethodConfig methodConfig, RemoteReqContext req, RemoteResContext res, Object[] args) {
-        for (Integer index : this.callbackIndex) {
-            Object callBack = args[index];
-            if (Objects.isNull(callBack)) continue;
-            if (!(callBack instanceof RetryWhen)) continue;
-            if (((RetryWhen) callBack).retryWhen(data, methodConfig, req, res, args))
-                return true;
-        }
 
         boolean retry = false;
         for (RetryWhen handler : retryWhenHandlers) {
@@ -253,10 +248,27 @@ public class RemoteHandlerContext {
                 break;
             }
         }
+
+        for (Integer index : this.callbackIndex) {
+            Object callBack = args[index];
+            if (Objects.isNull(callBack)) continue;
+            if (!(callBack instanceof RetryWhen)) continue;
+            if (((RetryWhen) callBack).retryWhen(data, methodConfig, req, res, args))
+                return true;
+        }
+
         return retry;
     }
 
     public boolean successWhen(Object data, RemoteMethodConfig methodConfig, RemoteReqContext req, RemoteResContext res, Object[] args) {
+
+        for (SuccessWhen handler : successWhenHandlers) {
+            if (Objects.isNull(handler)) continue;
+            if (!handler.success(data, methodConfig, req, res, args)) {
+                return false;
+            }
+        }
+
         for (Integer index : this.callbackIndex) {
             Object callBack = args[index];
             if (Objects.isNull(callBack) || !(callBack instanceof SuccessWhen))
@@ -264,13 +276,6 @@ public class RemoteHandlerContext {
 
             if (!((SuccessWhen) callBack).success(data, methodConfig, req, res, args))
                 return false;
-        }
-
-        for (SuccessWhen handler : successWhenHandlers) {
-            if (Objects.isNull(handler)) continue;
-            if (!handler.success(data, methodConfig, req, res, args)) {
-                return false;
-            }
         }
 
         return true;

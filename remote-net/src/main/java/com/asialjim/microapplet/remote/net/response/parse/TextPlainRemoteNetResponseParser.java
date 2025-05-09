@@ -21,14 +21,17 @@ import com.asialjim.microapplet.remote.context.RemoteMethodConfig;
 import com.asialjim.microapplet.remote.context.RemoteResContext;
 import com.asialjim.microapplet.remote.net.mime.MimeMenu;
 import com.asialjim.microapplet.remote.net.response.BaseRemoteNetResponseParser;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.activation.MimeType;
+import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public abstract class TextPlainRemoteNetResponseParser extends BaseRemoteNetResponseParser {
     public static final GenericKey<String> TEXT_RES = GenericKey.keyOf("text/*_net_response");
@@ -59,8 +62,8 @@ public abstract class TextPlainRemoteNetResponseParser extends BaseRemoteNetResp
         Charset charset = charset(resContext);
         byte[] bytes = responseContent(resContext);
         String responseString = new String(bytes, charset);
-        log.info("\r\n\tRemote NET Res Body <<< Client:{} <<< {}", methodConfig.getRemoteName(), responseString);
-        resContext.property(TEXT_RES,responseString);
+        log.info("Remote NET Res Body <<< Client:{} <<< {}", methodConfig.getRemoteName(), responseString);
+        resContext.property(TEXT_RES, responseString);
         resContext.setTempData(responseString);
     }
 
@@ -73,10 +76,50 @@ public abstract class TextPlainRemoteNetResponseParser extends BaseRemoteNetResp
      */
     protected abstract Charset charset(RemoteResContext resContext);
 
-    protected abstract byte[] responseContent(RemoteResContext resContext);
+    protected byte[] responseContent(RemoteResContext resContext) {
+        Object tempData = resContext.getTempData();
+        if (Objects.isNull(tempData))
+            return new byte[0];
+
+        if (tempData instanceof byte[])
+            return (byte[]) tempData;
+
+        if (tempData instanceof InputStream) {
+            try {
+                InputStream inputStream = (InputStream) tempData;
+                return IOUtils.toByteArray(inputStream);
+            } catch (Throwable t) {
+                return new byte[0];
+            }
+        }
+
+        return new byte[0];
+    }
 
     @Override
     public final List<MimeType> support() {
         return MIME_TYPES;
+    }
+
+    @Override
+    protected boolean support(MimeType source, MimeType target) {
+        String sourcePrimaryType = source.getPrimaryType();
+        String sourceSubType = source.getSubType();
+
+        String targetPrimaryType = target.getPrimaryType();
+        String targetSubType = target.getSubType();
+        if (StringUtils.equals(targetPrimaryType, "*"))
+            return true;
+
+        if (!StringUtils.equals(targetPrimaryType, sourcePrimaryType))
+            return false;
+
+        if (StringUtils.contains(sourceSubType, "event-stream"))
+            return false;
+
+        if (StringUtils.equals(targetSubType,"*"))
+            return true;
+
+        return true;
     }
 }

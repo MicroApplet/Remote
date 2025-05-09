@@ -28,7 +28,6 @@ import com.asialjim.microapplet.remote.net.constant.RemoteConstant;
 import com.asialjim.microapplet.remote.net.context.RemoteNetNodeKey;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.*;
 import org.apache.http.auth.AuthScope;
@@ -58,7 +57,9 @@ import org.slf4j.LoggerFactory;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLContext;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
@@ -213,7 +214,7 @@ public class ApacheRemoteHTTPClient implements RemoteNetClient {
 
     @Override
     public void send(RemoteReqContext req, RemoteResContext res) {
-        log.info("\r\n\tRemote NET Req Exec === Endpot: {}", this);
+        log.info("Remote NET Req Exec === Endpot: {}", this);
         PoolingHttpClientConnectionManager cm = POOLING_HTTP_CLIENT_CONNECTION_MANAGER_MAP.get(this.nodeCode);
 
         // 处理HTTP链接
@@ -276,11 +277,9 @@ public class ApacheRemoteHTTPClient implements RemoteNetClient {
                 if (Objects.isNull(resEntity))
                     return;
 
-                byte[] byteArray = IOUtils.toByteArray(resEntity.getContent());
-                if (headerMap.keySet().stream().noneMatch(item -> StringUtils.equalsIgnoreCase("content-length", item)))
-                    headerMap.put("Content-Length", String.valueOf(ArrayUtils.getLength(byteArray)));
-
-                res.setTempData(byteArray);
+                InputStream inputStream = resEntity.getContent();
+                InputStream copy = copy(inputStream);
+                res.setTempData(copy);
             } catch (IOException e) {
                 res.setCause(e);
             } finally {
@@ -289,6 +288,11 @@ public class ApacheRemoteHTTPClient implements RemoteNetClient {
         } catch (MethodNotSupportedException e) {
             res.setCause(e);
         }
+    }
+
+    private InputStream copy(InputStream source) throws IOException {
+        final byte[] bytes = IOUtils.toByteArray(source);
+        return new ByteArrayInputStream(bytes);
     }
 
     private void addRequestTimeout(RequestConfig.Builder custom) {

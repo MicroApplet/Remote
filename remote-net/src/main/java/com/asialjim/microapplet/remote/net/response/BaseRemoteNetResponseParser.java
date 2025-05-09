@@ -51,9 +51,16 @@ public abstract class BaseRemoteNetResponseParser implements RemoteNetResponsePa
         if (Objects.nonNull(data) && returnClass.isAssignableFrom(data.getClass()))
             return;
 
-        if (Optional.ofNullable(support()).orElse(Collections.emptyList()).stream().noneMatch(item -> support(item,mediaType)))
-            return;
-
-        doParse(mediaType,methodConfig,resContext);
+        List<MimeType> supports = support();
+        for (MimeType support : supports) {
+            Boolean parsed = resContext.property(RemoteNetResponseParser.parsed);
+            if (Boolean.TRUE.equals(parsed))
+                return;
+            boolean candidate = support(mediaType, support);
+            if (candidate){
+                doParse(mediaType,methodConfig,resContext);
+                return;
+            }
+        }
     }
 }

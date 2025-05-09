@@ -19,10 +19,11 @@ package com.asialjim.microapplet.remote.lifecycle.callback;
 import com.asialjim.microapplet.remote.context.RemoteMethodConfig;
 import com.asialjim.microapplet.remote.context.RemoteReqContext;
 import com.asialjim.microapplet.remote.context.RemoteResContext;
+import com.asialjim.microapplet.remote.lifecycle.CallBack;
 import com.asialjim.microapplet.remote.lifecycle.LifeCycle;
 
 @FunctionalInterface
-public interface After extends LifeCycle {
+public interface After  extends CallBack {
 
     /**
      * after 方法， 在方法执行前开始执行

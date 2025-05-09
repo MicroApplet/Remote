@@ -54,15 +54,15 @@ public abstract class AbstractHttpProcessLifeCycle implements Before, Invoke, Af
         headers.putIfAbsent("Host", req.get(RemoteConstant.HOST));
         req.put(AbstractHttpHeaderLifeCycle.HTTP_HEADER_VALUE, headers);
 
-        log.info("\r\n\tRemote NET Req Line >>> Client:{} >>> {} {}://{}:{}{}", methodConfig.getRemoteName(), req.get(AbstractHttpMappingLifeCycle.HTTP_METHOD_KEY), req.get(RemoteConstant.SCHEMA), req.get(RemoteConstant.HOST), req.get(RemoteConstant.PORT), url);
-        log.info("\r\n\tRemote NET Req Head >>> Client:{} >>> {}", methodConfig.getRemoteName(), headers);
+        log.info("Remote NET Req Line >>> Client:{} >>> {} {}://{}:{}{}", methodConfig.getRemoteName(), req.get(AbstractHttpMappingLifeCycle.HTTP_METHOD_KEY), req.get(RemoteConstant.SCHEMA), req.get(RemoteConstant.HOST), req.get(RemoteConstant.PORT), url);
+        log.info("Remote NET Req Head >>> Client:{} >>> {}", methodConfig.getRemoteName(), headers);
         AbstractFormDataLifeCycle.callFromLog(req);
         Boolean fromDataRequest = req.get(AbstractFormDataLifeCycle.FORM_DATA_REQUEST);
         if (StringUtils.isNotBlank(bodyStr) && !Boolean.TRUE.equals(fromDataRequest))
-            log.info("\r\n\tRemote NET Req Body >>> Client:{} >>> {}", methodConfig.getRemoteName(), bodyStr);
+            log.info("Remote NET Req Body >>> Client:{} >>> {}", methodConfig.getRemoteName(), bodyStr);
         SSLContext sslContext = req.get(Ssl.SslLifeCycle.SSL_CONTEXT_GENERIC_KEY);
         if (Objects.nonNull(sslContext))
-            log.info("\r\n\tRemote NET Req Ssl  >>> Client:{} >>> {}", methodConfig.getRemoteName(), sslContext);
+            log.info("Remote NET Req Ssl  >>> Client:{} >>> {}", methodConfig.getRemoteName(), sslContext);
 
         RemoteNetClient client = req.get(RemoteNetClient.REMOTE_NET_CLIENT_GENERIC_KEY);
         if (Objects.nonNull(client))

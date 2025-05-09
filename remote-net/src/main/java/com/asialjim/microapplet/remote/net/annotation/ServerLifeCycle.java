@@ -173,7 +173,7 @@ public final class ServerLifeCycle implements Before, After, SuccessWhen, OnErro
 
     @Override
     public boolean onError(Object data, RemoteMethodConfig config, RemoteReqContext req, RemoteResContext res, Throwable ex, Object[] args) {
-        log.info("\r\n\tRemote NET Req Err  === Client:{} === {}", config.getRemoteName(), ex.getMessage(), ex);
+        log.info("Remote NET Req Err  === Client:{} === {}", config.getRemoteName(), ex.getMessage(), ex);
 
         // 连接异常
         if (ex instanceof ConnectionException) {

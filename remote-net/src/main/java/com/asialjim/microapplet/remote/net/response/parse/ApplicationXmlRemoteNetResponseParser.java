@@ -21,6 +21,7 @@ import com.asialjim.microapplet.remote.context.RemoteResContext;
 import com.asialjim.microapplet.remote.net.jackson.AbstractJacksonUtil;
 import com.asialjim.microapplet.remote.net.mime.MimeMenu;
 import com.asialjim.microapplet.remote.net.response.BaseRemoteNetResponseParser;
+import com.asialjim.microapplet.remote.net.response.RemoteNetResponseParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,8 +44,9 @@ public class ApplicationXmlRemoteNetResponseParser extends BaseRemoteNetResponse
         Class<?> returnClass = methodConfig.getReturnClass();
 
         Object res = AbstractJacksonUtil.xml2Object(xml, returnClass);
-        log.info("\r\n\tRemote NET Res Data <<< Client:{} <<< {}", methodConfig.getRemoteName(),res);
+        log.info("Remote NET Res Data <<< Client:{} <<< {}", methodConfig.getRemoteName(),res);
         resContext.setData(res);
+        resContext.property(RemoteNetResponseParser.parsed,true);
     }
 
     @Override

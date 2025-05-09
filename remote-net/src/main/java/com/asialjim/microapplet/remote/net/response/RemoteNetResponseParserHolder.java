@@ -18,10 +18,7 @@ package com.asialjim.microapplet.remote.net.response;
 import com.asialjim.microapplet.remote.context.RemoteMethodConfig;
 import com.asialjim.microapplet.remote.context.RemoteResContext;
 import com.asialjim.microapplet.remote.loader.RemoteClassLoader;
-import com.asialjim.microapplet.remote.net.response.parse.ApplicationJsonRemoteNetResponseParser;
-import com.asialjim.microapplet.remote.net.response.parse.ApplicationXmlRemoteNetResponseParser;
-import com.asialjim.microapplet.remote.net.response.parse.BufferRemoteNetResponseParser;
-import com.asialjim.microapplet.remote.net.response.parse.TextPlainRemoteNetResponseParser;
+import com.asialjim.microapplet.remote.net.response.parse.*;
 
 import javax.activation.MimeType;
 import java.lang.reflect.Constructor;
@@ -34,6 +31,8 @@ public class RemoteNetResponseParserHolder {
     private static final Set<RemoteNetResponseParser> RESPONSE_SET = new LinkedHashSet<>();
 
     static {
+        addResponseParser(TextEventStreamRemoteNetResponseParser.INSTANCE);
+
         addParser(TextPlainRemoteNetResponseParser.class);
         addParser(BufferRemoteNetResponseParser.class);
 
@@ -63,6 +62,9 @@ public class RemoteNetResponseParserHolder {
 
     public static void parse(MimeType mediaType, RemoteMethodConfig methodConfig, RemoteResContext resContext) {
         for (RemoteNetResponseParser parser : RESPONSE_PARSERS) {
+            Boolean parsed = resContext.property(RemoteNetResponseParser.parsed);
+            if (Boolean.TRUE.equals(parsed))
+                return;
             if (parser.support(resContext))
                 parser.parse(mediaType, methodConfig, resContext);
         }

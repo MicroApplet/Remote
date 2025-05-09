@@ -24,17 +24,13 @@ import com.asialjim.microapplet.remote.lifecycle.callback.Before;
 import com.asialjim.microapplet.remote.lifecycle.callback.Invoke;
 import com.asialjim.microapplet.remote.lifecycle.callback.OnError;
 import com.asialjim.microapplet.remote.net.constant.RemoteConstant;
-import com.asialjim.microapplet.remote.net.jackson.AbstractJacksonUtil;
 import com.asialjim.microapplet.remote.net.mime.MimeMenu;
 import com.asialjim.microapplet.remote.net.response.RemoteNetResponseParserHolder;
-import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.activation.MimeType;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -72,7 +68,7 @@ import java.util.Optional;
 
          String proxyHost = req.get(RemoteConstant.PROXY_HOST);
          Integer proxyPort = req.get(RemoteConstant.PROXY_PORT);
-         log.info("\r\n\tRemote NET Req Host >>> Client:{} >>> {}://{}:{}/ , Proxy[Host:{}, Port:{}]",
+         log.info("Remote NET Req Host >>> Client:{} >>> {}://{}:{}/ , Proxy[Host:{}, Port:{}]",
                  methodConfig.getRemoteName(),
                  req.get(RemoteConstant.SCHEMA),
                  req.get(RemoteConstant.HOST),
@@ -89,43 +85,15 @@ import java.util.Optional;
      @Override
      public void after(Object data, RemoteMethodConfig methodConfig, RemoteReqContext req, RemoteResContext res, Object[] args) {
          doAfter(data, methodConfig, req, res, args);
-         log.info("\r\n\tRemote NET Res Line <<< Client:{} <<< Status: {}, ProtocolVersion: {}", methodConfig.getRemoteName(), res.getStatus(), res.getProtocol());
-         log.info("\r\n\tRemote NET Res Head <<< Client:{} <<< {}", methodConfig.getRemoteName(), AbstractJacksonUtil.writeValueAsJsonString(res.getHeaders()));
-
-         Class<?> returnClass = methodConfig.getReturnClass();
-         if (Void.class.isAssignableFrom(returnClass)) {
-             res.callback();
-             return;
-         }
-
          Map<String, String> headers = responseHeader(res);
-         String lengthStr = headers.entrySet().stream().filter(item -> StringUtils.equalsIgnoreCase(item.getKey(), "Content-Length")).map(Map.Entry::getValue).findAny().orElse("0");
-         long length;
-         Object tempData = res.getTempData();
-         if (tempData instanceof byte[])
-             length = ArrayUtils.getLength((byte[])tempData);
-         else
-             length = Integer.parseInt(lengthStr);
 
-         if (length == 0) {
-             try {
-                 Constructor<?> constructor = returnClass.getConstructor();
-                 Object o = constructor.newInstance();
-                 res.setData(o);
-             } catch (InstantiationException | IllegalAccessException |  InvocationTargetException | NoSuchMethodException e) {
-                 log.info("\r\n\tRemote NET Res Build <<< Client:{} Error <<< {}", methodConfig.getRemoteName(), e.getMessage(), e);
-             }
-             res.callback();
-             return;
-         }
-
+         log.info("Remote NET Res Line <<< Client:{} <<< Status: {}, ProtocolVersion: {}", methodConfig.getRemoteName(), res.getStatus(), res.getProtocol());
+         log.info("Remote NET Res Head <<< Client:{} <<< {}", methodConfig.getRemoteName(), headers);
 
          String contentType = headers.entrySet().stream().filter(item -> StringUtils.equalsIgnoreCase(item.getKey(), "Content-Type")).map(Map.Entry::getValue).findAny().orElse(StringUtils.EMPTY);
-
-         if (log.isDebugEnabled())
-             log.debug("Response Content Type: {}", contentType);
          MimeType mimeType = Optional.ofNullable(res.property(MimeMenu.MIME_TYPE_GENERIC_KEY)).orElseGet(() -> MimeMenu.createConstant(contentType));
          RemoteNetResponseParserHolder.parse(mimeType, methodConfig, res);
+
          res.callback();
      }
 

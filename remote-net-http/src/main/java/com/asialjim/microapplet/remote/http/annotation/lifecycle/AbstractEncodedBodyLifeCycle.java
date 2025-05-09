@@ -78,7 +78,7 @@ public abstract class AbstractEncodedBodyLifeCycle implements Before, Invoke {
      @Override
      public void invoke(Object data, RemoteMethodConfig methodConfig, RemoteReqContext req, RemoteResContext res, Object[] args) {
          String urlEncoded = req.get(BaseObjectMapperRequestBodyLifeCycle.STRING_BODY_KEY);
-         log.info("\r\n\tRemote NET Req Body >>> {}", urlEncoded);
+         log.info("Remote NET Req Body >>> {}", urlEncoded);
      }
 
      protected abstract void doBefore(Object data, RemoteMethodConfig methodConfig, RemoteReqContext req, RemoteResContext res, Object[] args);

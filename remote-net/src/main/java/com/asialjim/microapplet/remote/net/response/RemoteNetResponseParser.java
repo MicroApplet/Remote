@@ -16,6 +16,7 @@
 
 package com.asialjim.microapplet.remote.net.response;
 
+import com.asialjim.microapplet.remote.context.GenericKey;
 import com.asialjim.microapplet.remote.context.RemoteMethodConfig;
 import com.asialjim.microapplet.remote.context.RemoteResContext;
 
@@ -23,6 +24,7 @@ import javax.activation.MimeType;
 import java.util.List;
 
 public interface RemoteNetResponseParser {
+    GenericKey<Boolean> parsed = GenericKey.keyOf("_net_has_parsed");
     void parse(MimeType mediaType, RemoteMethodConfig methodConfig, RemoteResContext resContext);
 
     List<MimeType> support();

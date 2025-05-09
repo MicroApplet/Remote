@@ -18,10 +18,11 @@ package com.asialjim.microapplet.remote.lifecycle.callback;
 import com.asialjim.microapplet.remote.context.RemoteMethodConfig;
 import com.asialjim.microapplet.remote.context.RemoteReqContext;
 import com.asialjim.microapplet.remote.context.RemoteResContext;
+import com.asialjim.microapplet.remote.lifecycle.CallBack;
 import com.asialjim.microapplet.remote.lifecycle.LifeCycle;
 
 @FunctionalInterface
-public interface Invoke extends LifeCycle {
+public interface Invoke  extends CallBack {
 
     /**
      * 执行方法， 一般用于最重要的网络请求

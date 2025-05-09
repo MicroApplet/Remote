@@ -21,6 +21,7 @@ import com.asialjim.microapplet.remote.context.RemoteResContext;
 import com.asialjim.microapplet.remote.net.mime.MimeMenu;
 import com.asialjim.microapplet.remote.net.response.BaseRemoteNetResponseParser;
 import com.asialjim.microapplet.remote.net.response.BufferResponse;
+import com.asialjim.microapplet.remote.net.response.RemoteNetResponseParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -74,9 +75,10 @@ public abstract class BufferRemoteNetResponseParser extends BaseRemoteNetRespons
             o.setMimeType(mimeType(resContext));
 
             int size = Optional.ofNullable(o.getBuffer()).map(item -> item.length).orElse(0);
-            log.info("\r\n\tRemote NET Res Body <<< Client:{} <<< @Buffer Size: {}B, {}KB, {}MB, {}GB", methodConfig.getRemoteName(), size, size >> 10, size >> 10 >> 10, size >> 10 >> 10 >> 10);
-            log.info("\r\n\tRemote NET Res Data <<< Client:{} <<< {}", methodConfig.getRemoteName(), o);
+            log.info("Remote NET Res Body <<< Client:{} <<< @Buffer Size: {}B, {}KB, {}MB, {}GB", methodConfig.getRemoteName(), size, size >> 10, size >> 10 >> 10, size >> 10 >> 10 >> 10);
+            log.info("Remote NET Res Data <<< Client:{} <<< {}", methodConfig.getRemoteName(), o);
             resContext.setData(o);
+            resContext.property(RemoteNetResponseParser.parsed,true);
         } catch (InvocationTargetException | InstantiationException | IllegalAccessException e) {
             throw new RuntimeException(e);
         }
@@ -135,6 +137,7 @@ public abstract class BufferRemoteNetResponseParser extends BaseRemoteNetRespons
 
     @Override
     protected final boolean support(MimeType source, MimeType target) {
-        return support().stream().anyMatch(item -> item.match(target));
+        return source.match(target);
+        //return support().stream().anyMatch(item -> item.match(target));
     }
 }

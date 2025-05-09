@@ -60,7 +60,7 @@ public class RemoteMethodInvoker {
             if (log.isDebugEnabled()) log.debug("Remote 客户端： {} 执行 on 方法", methodConfig.getRemoteName());
 
             handlerContext.on(resContext.getData(), this.methodConfig, reqContext, resContext, copyArgs);
-            log.info("\r\n\tRemote 客户端：{} 执行时间： {} 毫秒\r\n", methodConfig.getRemoteName(), time);
+            log.info("Remote 客户端：{} 执行时间： {} 毫秒\r\n", methodConfig.getRemoteName(), time);
         }
     }
 

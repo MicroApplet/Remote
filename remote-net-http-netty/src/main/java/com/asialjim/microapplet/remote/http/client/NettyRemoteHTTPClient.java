@@ -32,6 +32,7 @@ import com.asialjim.microapplet.remote.net.context.RemoteNetNodeKey;
 import com.asialjim.microapplet.remote.net.netty.NettyPoolUtil;
 import com.asialjim.microapplet.remote.net.netty.context.RemoteNettyChannelContext;
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufInputStream;
 import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
@@ -152,7 +153,8 @@ public final class NettyRemoteHTTPClient implements RemoteNetClient {
 
     @Override
     public void send(RemoteReqContext req, RemoteResContext res) {
-        log.info("\r\n\tRemote NET Req Exec === Endpot: {}", this);
+        log.info("Remote NET Req Exec === Endpot: {}", this);
+        //noinspection resource
         final SimpleChannelPool simpleChannelPool = Optional.ofNullable(req.get(CHANNEL_POOL_GENERIC_KEY)).orElseGet(() -> RemoteHttpClientPoolOnNetty.simpleChannelPool(this.nodeKey));
         final Promise<FullHttpResponse> promise = Optional.ofNullable(req.get(FULL_HTTP_RESPONSE_PROMISE_KEY)).orElseGet(RemoteNettyChannelContext.NETTY_RESPONSE_PROMISE_NOTIFY_EVENT_LOOP::newPromise);
 
@@ -191,10 +193,9 @@ public final class NettyRemoteHTTPClient implements RemoteNetClient {
                     }
                 }
                 res.setHeaders(headerMap);
-                ByteBuf content = fullHttpResponse.content();
-                byte[] contentBuffer = ByteBufUtil.getBytes(content);
-                res.setTempData(contentBuffer);
-                NettyPoolUtil.releaseObject(content, fullHttpResponse);
+                ByteBufInputStream inputStream = new ByteBufInputStream(fullHttpResponse.content(),true);
+                res.setTempData(inputStream);
+                NettyPoolUtil.releaseObject(fullHttpResponse);
             }
             ServerLifeCycle.countDown(req);
         });
