@@ -34,7 +34,7 @@ docker rmi ${group_name}/${app_name}:${app_version}
 
 docker build -t ${group_name}/${app_name}:${app_version} .
 
-docker run --name ${docker_name} \
+docker run -p 13001:13001 --name ${docker_name} \
 --cpus="2" --memory="1g" \
 -e 'spring.profiles.active'=${profile_active} \
 -e TZ="Asia/Shanghai" \
