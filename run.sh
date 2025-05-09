@@ -36,7 +36,6 @@ docker build -t ${group_name}/${app_name}:${app_version} .
 
 docker run --name ${docker_name} \
 --cpus="2" --memory="1g" \
---env-file /root/.env/mams.env \
 -e 'spring.profiles.active'=${profile_active} \
 -e TZ="Asia/Shanghai" \
 -v /etc/localtime:/etc/localtime \
