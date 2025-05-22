@@ -174,6 +174,17 @@ public abstract class AbstractJacksonUtil {
         }
     }
 
+    public static String writeValueAsString(String rootName, Object body, ObjectMapper mapper){
+        try {
+            return mapper.writer().withRootName(rootName).writeValueAsString(body);
+        } catch (Throwable t) {
+            log.error("Write Value for: {} Exception: {}", body, t.getMessage(), t);
+            if (mapper instanceof XmlMapper)
+                return "</>";
+            return "{}";
+        }
+    }
+
     /**
      * 使用指定的反序列化器反序列化为列表
      *
