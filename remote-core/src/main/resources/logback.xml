@@ -18,7 +18,7 @@
     <appender name="consoleLog" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
             <pattern>
-                %d{yy-MM-dd,HH:mm:ss SSS} ${hostName} %X{HOST_IP} %X{REQUEST_ID} [%-5t] %-5p %-22c{1} - %m%n
+                %d{yy-MM-dd HH:mm:ss.SSS} ${hostName} %X{HOST_IP} %X{REQUEST_ID} [%-5t] %-5p %-22c{1} - %m%n
             </pattern>
         </encoder>
     </appender>
