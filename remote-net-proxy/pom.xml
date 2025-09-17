@@ -20,7 +20,7 @@
     <parent>
         <groupId>com.asialjim.microapplet</groupId>
         <artifactId>remote</artifactId>
-        <version>1.2.0-SNAPSHOT</version>
+        <version>1.2.1-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
@@ -32,6 +32,7 @@
             <groupId>io.netty</groupId>
             <artifactId>netty-all</artifactId>
         </dependency>
+        <!--suppress VulnerableLibrariesLocal -->
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
@@ -56,23 +57,5 @@
         </dependency>
     </dependencies>
 
-    <build>
-        <!--发布到maven 中央仓库-->
-        <plugins>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-                <version>2.7.18</version>
-                <configuration>
-                    <mainClass>com.asialjim.microapplet.remote.proxy.server.SocksServer</mainClass>
-                    <finalName>RemoteProxy</finalName>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>repackage</id>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
-    </build>
+
 </project>
