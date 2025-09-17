@@ -13,24 +13,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.asialjim.microapplet.remote.spring;
 
-import org.springframework.context.annotation.Import;
-
-import java.lang.annotation.*;
+import com.asialjim.microapplet.remote.proxy.RemoteProxy;
+import lombok.Data;
+import org.springframework.beans.factory.FactoryBean;
 
 /**
- * Remote Bean 扫描
+ * Remote Spring Bean
  *
  * @author <a href="mailto:asialjim@hotmail.com">Asial Jim</a>
  * @version 1.0
- * @since 2025/4/11, &nbsp;&nbsp; <em>version:1.0</em>
+ * @since 2025/9/17, &nbsp;&nbsp; <em>version:1.0</em>
  */
-@Documented
-@Target(ElementType.TYPE)
-@Retention(RetentionPolicy.RUNTIME)
-@Import(RemoteBeanDefinitionRegistrar.class)
-public @interface RemoteScan {
+@Data
+public class RemoteFactoryBean<T> implements FactoryBean<T> {
 
-    String[] value();
+    private Class<T> remoteInterface;
+
+
+    @Override
+    public T getObject() throws Exception {
+        return RemoteProxy.create(this.remoteInterface);
+    }
+
+    @Override
+    public Class<?> getObjectType() {
+        return this.remoteInterface;
+    }
 }
