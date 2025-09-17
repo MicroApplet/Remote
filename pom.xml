@@ -20,7 +20,7 @@
 
     <groupId>com.asialjim.microapplet</groupId>
     <artifactId>remote</artifactId>
-    <version>1.3.0</version>
+    <version>1.3.1-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>Remote</name>
     <url>https://github.com/MicroApplet/Remote</url>
@@ -68,7 +68,7 @@
         <connection>scm:git:git@github.com:MicroApplet/Remote.git</connection>
         <developerConnection>scm:git:git@github.com:MicroApplet/Remote.git</developerConnection>
         <url>https://github.com/MicroApplet/Remote</url>
-        <tag>v1.3.0</tag>
+        <tag>HEAD</tag>
     </scm>
 
     <modules>
