@@ -24,6 +24,7 @@
     </parent>
 
     <artifactId>remote-spring</artifactId>
+    <name>Remote Spring</name>
 
     <dependencies>
         <dependency>

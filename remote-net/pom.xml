@@ -23,6 +23,7 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
     <artifactId>remote-net</artifactId>
+    <name>Remote Net</name>
 
 
     <dependencies>

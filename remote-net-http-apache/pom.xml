@@ -25,6 +25,7 @@
     </parent>
 
     <artifactId>remote-net-http-apache</artifactId>
+    <name>Remote Net HTTP Apache</name>
 
 
     <dependencies>

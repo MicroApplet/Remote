@@ -24,6 +24,7 @@
     </parent>
 
     <artifactId>remote-net-repository-mybatis-flex</artifactId>
+    <name>Remote Net Repository MyBatis Flex</name>
 
     <dependencies>
         <!--suppress VulnerableLibrariesLocal -->

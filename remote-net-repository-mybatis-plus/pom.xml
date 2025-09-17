@@ -25,6 +25,7 @@
     </parent>
 
     <artifactId>remote-net-repository-mybatis-plus</artifactId>
+    <name>Remote Net Repository MyBatis Plus</name>
 
     <dependencies>
         <dependency>

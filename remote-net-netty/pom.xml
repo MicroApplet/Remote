@@ -24,6 +24,7 @@
     </parent>
 
     <artifactId>remote-net-netty</artifactId>
+    <name>Remote Net Netty</name>
 
     <dependencies>
         <!--suppress VulnerableLibrariesLocal -->

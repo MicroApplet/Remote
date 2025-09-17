@@ -24,6 +24,7 @@
     </parent>
 
     <artifactId>remote-core</artifactId>
+    <name>Remote Core</name>
 
 
     <dependencies>

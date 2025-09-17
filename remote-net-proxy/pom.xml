@@ -25,6 +25,7 @@
     </parent>
 
     <artifactId>remote-net-proxy</artifactId>
+    <name>Remote Net Proxy</name>
 
     <dependencies>
         <!--suppress VulnerableLibrariesLocal -->
