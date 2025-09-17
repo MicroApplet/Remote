@@ -24,9 +24,11 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.support.BeanDefinitionBuilder;
+import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.context.EnvironmentAware;
 import org.springframework.context.ResourceLoaderAware;
-import org.springframework.context.annotation.ImportSelector;
+import org.springframework.context.annotation.ImportBeanDefinitionRegistrar;
 import org.springframework.core.env.Environment;
 import org.springframework.core.env.StandardEnvironment;
 import org.springframework.core.io.Resource;
@@ -47,43 +49,27 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
-
 /**
- * Remote Bean 筛选器
+ * Remote Bean Definition Registrar
  *
  * @author <a href="mailto:asialjim@hotmail.com">Asial Jim</a>
  * @version 1.0
- * @since 2025/4/11, &nbsp;&nbsp; <em>version:1.0</em>
+ * @since 2025/9/17, &nbsp;&nbsp; <em>version:1.0</em>
  */
-@Setter
-public class RemoteBeanSelector implements ImportSelector, EnvironmentAware, ResourceLoaderAware {
-    private static final Logger log = LoggerFactory.getLogger(RemoteBeanSelector.class);
+public class RemoteBeanDefinitionRegistrar implements ImportBeanDefinitionRegistrar, EnvironmentAware, ResourceLoaderAware {
+    private static final Logger log = LoggerFactory.getLogger(RemoteBeanDefinitionRegistrar.class);
     private static final Set<String> CLASSES = new HashSet<>();
     private static final ResourcePatternResolver RESOLVER = new PathMatchingResourcePatternResolver();
     private static final MetadataReaderFactory METADATA_READER_FACTORY = new CachingMetadataReaderFactory();
     private static final Environment ENVIRONMENT = new StandardEnvironment();
     private static boolean tag = false;
 
+    @Setter
     private Environment environment;
 
-
-
     @Override
-    public void setResourceLoader(@SuppressWarnings("NullableProblems") ResourceLoader resourceLoader) {
-        if (tag)
-            return;
-        String primaries = environment.getProperty("remote.local.primaries");
-        RemoteLifeCycleHandlerFactory.primary(primaries);
-        ClassLoader classLoader = resourceLoader.getClassLoader();
-        RemoteClassLoader.classLoader(classLoader);
-        RemoteClassLoader.INSTANCE.init();
-        tag = true;
-    }
-
-
-    @Override
-    @SuppressWarnings("NullableProblems")
-    public String[] selectImports(AnnotationMetadata metadata) {
+    public void registerBeanDefinitions(AnnotationMetadata metadata,
+                                        @SuppressWarnings("NullableProblems") BeanDefinitionRegistry registry) {
         String configClassName = metadata.getClassName();
 
         final Set<String> packages = new HashSet<>();
@@ -94,15 +80,16 @@ public class RemoteBeanSelector implements ImportSelector, EnvironmentAware, Res
             // do nothing here
         }
 
-        Set<String> names = new HashSet<>();
         for (String aPackage : packages) {
             try {
                 String resourcePattern = "**/*.class";
                 String packageSearchPath = "classpath*:" + ClassUtils.convertClassNameToResourcePath(ENVIRONMENT.resolveRequiredPlaceholders(aPackage)) + "/" + resourcePattern;
                 Resource[] resources = RESOLVER.getResources(packageSearchPath);
                 for (Resource resource : resources) {
+                    //noinspection DuplicatedCode
                     MetadataReader metadataReader = METADATA_READER_FACTORY.getMetadataReader(resource);
                     AnnotationMetadata annotationMetadata = metadataReader.getAnnotationMetadata();
+                    //noinspection ConstantValue
                     if (Objects.isNull(annotationMetadata))
                         continue;
                     if (annotationMetadata.isAnnotation())
@@ -123,7 +110,10 @@ public class RemoteBeanSelector implements ImportSelector, EnvironmentAware, Res
                         if (CLASSES.contains(className))
                             continue;
                         CLASSES.add(className);
-                        names.add(className);
+                        BeanDefinitionBuilder builder = BeanDefinitionBuilder.genericBeanDefinition(RemoteFactoryBean.class);
+                        builder.addPropertyValue("remoteInterface", className);
+                        builder.setLazyInit(true);
+                        registry.registerBeanDefinition(className, builder.getBeanDefinition());
                     } catch (ClassNotFoundException e) {
                         log.error("Cannot Found Class: {}, Exception: {}", className, e.getMessage(), e);
                     }
@@ -132,10 +122,20 @@ public class RemoteBeanSelector implements ImportSelector, EnvironmentAware, Res
                 log.warn("Resolve package: {} to Find Remote Client Classes Exception Happen: {}", aPackage, e.getMessage(), e);
             }
         }
-
-        return names.toArray(new String[0]);
     }
 
+
+    @Override
+    public void setResourceLoader(@SuppressWarnings("NullableProblems") ResourceLoader resourceLoader) {
+        if (tag)
+            return;
+        String primaries = environment.getProperty("remote.local.primaries");
+        RemoteLifeCycleHandlerFactory.primary(primaries);
+        ClassLoader classLoader = resourceLoader.getClassLoader();
+        RemoteClassLoader.classLoader(classLoader);
+        RemoteClassLoader.INSTANCE.init();
+        tag = true;
+    }
 
     private void selectBrokerScanClass(Class<?> sourceClass, Set<String> packages) {
         Class<?> superclass = sourceClass.getSuperclass();
@@ -169,7 +169,7 @@ public class RemoteBeanSelector implements ImportSelector, EnvironmentAware, Res
         }
     }
 
-    public static  boolean candidateClass(Class<?> sourceClass) {
+    public static boolean candidateClass(Class<?> sourceClass) {
         Annotation[] annotations = sourceClass.getAnnotations();
         for (Annotation annotation : annotations) {
             boolean b = candidateAnnotation(annotation);
