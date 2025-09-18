@@ -21,6 +21,7 @@ import com.asialjim.microapplet.remote.net.event.ApiServerEnvironmentLockedEvent
 import com.asialjim.microapplet.remote.net.repository.mapper.ApiServerInfoMapper;
 import com.asialjim.microapplet.remote.net.repository.mapper.ApiServerInfoPO;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import jakarta.annotation.Resource;
 import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.ApplicationContext;
@@ -28,7 +29,6 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Resource;
 import java.time.Duration;
 import java.util.Calendar;
 import java.util.Objects;
@@ -57,13 +57,15 @@ public class ApiServerMyBatisPlusRepository implements ApiServerRepository, Appl
 
         // 环境已锁定
         if (Objects.nonNull(redisTemplate.opsForValue().get(lockKey))) {
-            log.info("查询API服务器配置信息，条件[供应商:{};业务:{};环境：{};本地环境：{}; 系统架构：{}]， 已锁定, 系统将自动启用公网环境", supplier, namespace, env, localEnv, arch);
+            log.warn("查询API服务器配置信息，条件[供应商:{};业务:{};环境：{};本地环境：{}; 系统架构：{}]， 已锁定, 系统将自动启用公网环境", supplier, namespace, env, localEnv, arch);
             // 使用公网环境
             env = "NET";
         }
         ApiServerInfo apiServerInfo = doQueryNetServerInfoBySupplierAndNamespaceAndEnv(supplier, namespace, env, arch, localEnv);
-        if (StringUtils.equals(ApiServerInfo.LOOP, Optional.ofNullable(apiServerInfo).map(ApiServerInfo::getHost).orElse(StringUtils.EMPTY)))
+        if (StringUtils.equals(ApiServerInfo.LOOP, Optional.ofNullable(apiServerInfo).map(ApiServerInfo::getHost).orElse(StringUtils.EMPTY))) {
+            log.warn("没找到API服务器配置信息，条件[供应商:{};业务:{};环境：{};本地环境：{}; 系统架构：{}]", supplier, namespace, env, localEnv, arch);
             return null;
+        }
         return apiServerInfo;
     }
 
@@ -77,7 +79,8 @@ public class ApiServerMyBatisPlusRepository implements ApiServerRepository, Appl
         log.info("添加一次超时次数 ：{}:{}:{}", supplierId, namespaceId, env);
         ApiServerInfo apiServerInfo = queryNetServerInfoBySupplierAndNamespaceAndEnv(supplierId, namespaceId, env);
         if (Objects.isNull(apiServerInfo)) {
-            log.info("未找到要添加超时次数的网络环境信息,不再添加次数");
+            if (log.isDebugEnabled())
+                log.debug("未找到要添加超时次数的网络环境信息,不再添加次数");
             return;
         }
 
@@ -108,22 +111,26 @@ public class ApiServerMyBatisPlusRepository implements ApiServerRepository, Appl
         // 获取当前超时记录过期时间
         // z_set 分数： 当前系统时间 + 滑动窗口时间
         long expiresTime = current.getTimeInMillis();
-        log.info("网络环境：{}：{}：{}超时记录过期时间：{}", supplierId, namespaceId, env, expiresTime);
+        if (log.isDebugEnabled())
+            log.info("网络环境：{}：{}：{}超时记录过期时间：{}", supplierId, namespaceId, env, expiresTime);
 
         String currentCalendarStr = current.get(Calendar.YEAR) + "/" + current.get(Calendar.MONTH) + "/" + current.get(Calendar.DAY_OF_MONTH) + ";" + current.get(Calendar.HOUR_OF_DAY) + ":" + current.get(Calendar.MINUTE) + ":" + current.get(Calendar.SECOND);
 
         // 添加超时记录
         Boolean add = redisTemplate.opsForZSet().add(key, currentCalendarStr, expiresTime);
-        log.info("网络环境：{}：{}：{}添加超时次数结果：{}", supplierId, namespaceId, env, add);
+        if (log.isDebugEnabled())
+            log.info("网络环境：{}：{}：{}添加超时次数结果：{}", supplierId, namespaceId, env, add);
 
         // 清除 z_set 分数小于当前系统时间
         // 因为在添加超时时间时，指定的 z_set 分数规则为： 当前系统时间 + 滑动窗口时间
         Long aLong = redisTemplate.opsForZSet().removeRangeByScore(key, 0, currentTimeMillis);
-        log.info("清除网络环境：{}：{}：{}过期的超时记录次数：{}", supplierId, namespaceId, env, aLong);
+        if (log.isDebugEnabled())
+            log.info("清除网络环境：{}：{}：{}过期的超时记录次数：{}", supplierId, namespaceId, env, aLong);
 
         // 获取从现在往倒数  maxTimeoutThreshold 分钟以前的超时次数
         Long count = redisTemplate.opsForZSet().count(key, currentTimeMillis, expiresTime);
-        log.info("网络环境：{}：{}：{}滑动窗口时间内，超时次数为：{}", supplierId, namespaceId, env, count);
+        if (log.isDebugEnabled())
+            log.info("网络环境：{}：{}：{}滑动窗口时间内，超时次数为：{}", supplierId, namespaceId, env, count);
 
         // 设置过期时间为7天以后
         // 设置滑动窗口时间长度不能超过7天

@@ -16,6 +16,7 @@
 package com.asialjim.microapplet.remote.proxy.server.conf.listener;
 
 import com.asialjim.microapplet.remote.proxy.server.ProxyServer;
+import jakarta.annotation.Resource;
 import lombok.Setter;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -25,7 +26,6 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Resource;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -36,7 +36,8 @@ import java.util.concurrent.Executor;
 @EnableAsync
 public class StartServerListener implements ApplicationListener<ContextRefreshedEvent>, ApplicationContextAware {
     private Set<ProxyServer> servers;
-    @Resource private Executor executor;
+    @Resource
+    private Executor executor;
     @Setter private ApplicationContext applicationContext;
 
     @Override

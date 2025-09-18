@@ -84,9 +84,8 @@ public abstract class TextPlainRemoteNetResponseParser extends BaseRemoteNetResp
         if (tempData instanceof byte[])
             return (byte[]) tempData;
 
-        if (tempData instanceof InputStream) {
+        if (tempData instanceof InputStream inputStream) {
             try {
-                InputStream inputStream = (InputStream) tempData;
                 return IOUtils.toByteArray(inputStream);
             } catch (Throwable t) {
                 return new byte[0];

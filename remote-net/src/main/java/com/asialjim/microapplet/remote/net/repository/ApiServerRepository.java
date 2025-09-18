@@ -16,10 +16,10 @@
 package com.asialjim.microapplet.remote.net.repository;
 
 import com.asialjim.microapplet.remote.lifecycle.CallBack;
+import jakarta.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.annotation.PostConstruct;
 
 
 public interface ApiServerRepository extends CallBack {

@@ -15,24 +15,16 @@
  */
 package com.asialjim.microapplet.remote.context;
 
-import lombok.AllArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Objects;
 
-@AllArgsConstructor
 @SuppressWarnings("unused")
-public class GenericKey<Value> {
-    private final String key;
-
-    public static<Value> GenericKey<Value> keyOf(String key){
+public record GenericKey<Value>(String key) {
+    public static <Value> GenericKey<Value> keyOf(String key) {
         if (StringUtils.isBlank(key))
             throw new IllegalArgumentException("Key cannot be blank");
         return new GenericKey<>(key);
-    }
-
-    public String key(){
-        return key;
     }
 
     @Override
@@ -40,16 +32,13 @@ public class GenericKey<Value> {
         if (Objects.isNull(o) || !(o instanceof GenericKey))
             return false;
 
-        return StringUtils.equals(this.key, ((GenericKey<?>)o).key);
+        return StringUtils.equals(this.key, ((GenericKey<?>) o).key);
     }
 
     @Override
+    @SuppressWarnings("NullableProblems")
     public String toString() {
         return "GenericKey{" + key + '}';
     }
 
-    @Override
-    public int hashCode() {
-        return key.hashCode();
-    }
 }

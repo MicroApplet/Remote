@@ -29,19 +29,13 @@ import org.slf4j.MDC;
 
 import java.util.*;
 
-public class RemoteMethodInvoker {
+public record RemoteMethodInvoker(RemoteMethodConfig methodConfig) {
     private static final Logger log = LoggerFactory.getLogger(RemoteMethodInvoker.class);
-
-    private final RemoteMethodConfig methodConfig;
-
-    public RemoteMethodInvoker(RemoteMethodConfig methodConfig) {
-        this.methodConfig = methodConfig;
-    }
 
     public Object invoke(Object[] args) throws Throwable {
         String trace = MDC.get("REQUEST_ID");
         if (StringUtils.isBlank(trace))
-            trace = UUID.randomUUID().toString().substring(0,8);
+            trace = UUID.randomUUID().toString().substring(0, 8);
         MDC.put("REQUEST_ID", trace);
         RemoteReqContext reqContext = new RemoteReqContext();
         RemoteResContext resContext = new RemoteResContext();
@@ -88,7 +82,7 @@ public class RemoteMethodInvoker {
 
             // 判断流程是否错误
             if (Objects.nonNull(resContext.getCause())) {
-                log.error("Remote 客户端： {} 执行异常：{}", methodConfig.getRemoteName(), resContext.getCause().getMessage(),resContext.getCause());
+                log.error("Remote 客户端： {} 执行异常：{}", methodConfig.getRemoteName(), resContext.getCause().getMessage(), resContext.getCause());
                 // 抛出错误，并交由 catch 模块中的回调函数处理
                 throw resContext.getCause();
             }
@@ -133,13 +127,14 @@ public class RemoteMethodInvoker {
 
             // 需要重试
             if (retry) {
-                if (log.isDebugEnabled()) log.debug("Remote 客户端： {} 执行 onRetry 方法", methodConfig.getRemoteName());
+                if (log.isDebugEnabled())
+                    log.debug("Remote 客户端： {} 执行 onRetry 方法", methodConfig.getRemoteName());
                 handlerContext.onRetry(resContext.getData(), methodConfig, reqContext, resContext, copyArgs);
                 // 重试
                 return doInvoke(handlerContext, methodConfig, reqContext, resContext, copyArgs);
             }
 
-            if (CollectionUtils.isNotEmpty(resContext.getThrowable())){
+            if (CollectionUtils.isNotEmpty(resContext.getThrowable())) {
                 List<Throwable> throwable = resContext.getThrowable();
                 StringJoiner sj = new StringJoiner(";\r\n");
                 for (Throwable e : throwable) {
@@ -151,7 +146,7 @@ public class RemoteMethodInvoker {
 
             return resContext.getData();
         } finally {
-            handlerContext.finalFunction(resContext.getData(),methodConfig,reqContext,resContext,copyArgs);
+            handlerContext.finalFunction(resContext.getData(), methodConfig, reqContext, resContext, copyArgs);
         }
     }
 }

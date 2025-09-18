@@ -138,7 +138,7 @@ public class RemoteLifeCycleHandlerFactory {
             List<Class<?>> candidates = subClasses.stream().filter(item -> item.isAnnotationPresent(Primary.class)).collect(Collectors.toList());
             if (CollectionUtils.size(candidates) == 1) {
                 // noinspection unchecked
-                clazz = (Class<? extends RemoteLifeCycle.LifeCycleHandler<?>>) candidates.get(0);
+                clazz = (Class<? extends RemoteLifeCycle.LifeCycleHandler<?>>) candidates.getFirst();
                 return constructInstance(clazz, name);
             }
 

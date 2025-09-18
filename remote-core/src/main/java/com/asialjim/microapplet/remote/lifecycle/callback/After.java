@@ -20,7 +20,6 @@ import com.asialjim.microapplet.remote.context.RemoteMethodConfig;
 import com.asialjim.microapplet.remote.context.RemoteReqContext;
 import com.asialjim.microapplet.remote.context.RemoteResContext;
 import com.asialjim.microapplet.remote.lifecycle.CallBack;
-import com.asialjim.microapplet.remote.lifecycle.LifeCycle;
 
 @FunctionalInterface
 public interface After  extends CallBack {

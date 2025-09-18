@@ -17,11 +17,9 @@ package com.asialjim.microapplet.remote.context;
 
 import java.util.*;
 
-public class RemoteGenericMap implements Map<GenericKey<?>,Object> {
-    private final Map<GenericKey<?>, Object> map;
-
+public record RemoteGenericMap(Map<GenericKey<?>, Object> map) implements Map<GenericKey<?>, Object> {
     public RemoteGenericMap() {
-        this.map = new HashMap<>();
+        this(new HashMap<>());
     }
 
     @SuppressWarnings("unused")
@@ -29,25 +27,25 @@ public class RemoteGenericMap implements Map<GenericKey<?>,Object> {
         this.map = Optional.ofNullable(map).orElseGet(HashMap::new);
     }
 
-    public <Value> Value valueOf(GenericKey<Value> key){
+    public <Value> Value valueOf(GenericKey<Value> key) {
         //noinspection unchecked
         return (Value) map.get(key);
     }
 
-    public <Value> void valueOf(GenericKey<Value> key, Value value){
-        map.put(key,value);
+    public <Value> void valueOf(GenericKey<Value> key, Value value) {
+        map.put(key, value);
     }
 
-    public <Value> Value valueOf(String key){
+    public <Value> Value valueOf(String key) {
         GenericKey<Value> genericKey = GenericKey.keyOf(key);
 
         //noinspection unchecked
         return (Value) map.get(genericKey);
     }
 
-    public <Value> void valueOf(String key, Value value){
+    public <Value> void valueOf(String key, Value value) {
         GenericKey<Value> genericKey = GenericKey.keyOf(key);
-        map.put(genericKey,value);
+        map.put(genericKey, value);
     }
 
     @Override
@@ -81,7 +79,7 @@ public class RemoteGenericMap implements Map<GenericKey<?>,Object> {
 
     @Override
     public Object put(GenericKey<?> key, Object value) {
-        return map.put(key,value);
+        return map.put(key, value);
     }
 
     @Override
@@ -120,10 +118,11 @@ public class RemoteGenericMap implements Map<GenericKey<?>,Object> {
     }
 
     @Override
+    @SuppressWarnings("NullableProblems")
     public String toString() {
         StringJoiner sj = new StringJoiner(";");
 
-        map.forEach((key,value) -> sj.add(key.key() + "=" + value));
+        map.forEach((key, value) -> sj.add(key.key() + "=" + value));
         return "GenericMap{" +
                 "map=" + sj +
                 '}';
