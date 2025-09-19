@@ -23,12 +23,24 @@ import org.slf4j.LoggerFactory;
 
 import java.lang.annotation.*;
 
+
+/**
+ * 远程生命周期
+ *
+ * @author <a href="mailto:asialjim@hotmail.com">Asial Jim</a>
+ * @since 2025/09/19
+ */
 @Inherited
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.ANNOTATION_TYPE)
 public @interface RemoteLifeCycle {
 
+    /**
+     * 价值
+     *
+     * @return {@link Class<? extends LifeCycleHandler<?>>[]}
+     */
     Class<? extends LifeCycleHandler<?>>[] value();
 
     /**
