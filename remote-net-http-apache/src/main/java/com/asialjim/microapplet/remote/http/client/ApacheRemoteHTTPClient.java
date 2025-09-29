@@ -165,11 +165,11 @@ public class ApacheRemoteHTTPClient implements RemoteNetClient {
 
     }
 
-    public static String parseHttpUrl(RemoteReqContext req) {
+    public static String parseHttpUrl(RemoteReqContext req, RemoteNetNodeKey nodeKey) {
         String uri = Optional.ofNullable(req.get(AbstractHttpMappingLifeCycle.HTTP_REQUEST_URI)).orElse(StringUtils.EMPTY);
         if (uri.startsWith("/"))
             uri = uri.replaceFirst("/", "");
-        return String.format("%s://%s:%d/%s", req.get(RemoteConstant.SCHEMA), req.get(RemoteConstant.HOST), req.get(RemoteConstant.PORT), uri);
+        return String.format("%s://%s:%d/%s", nodeKey.getSchema(), nodeKey.getHost(), nodeKey.getPort(), uri);
     }
 
     private static HttpUriRequest httpRequest(String method, String uri, HttpEntity entity) throws MethodNotSupportedException {
@@ -218,7 +218,7 @@ public class ApacheRemoteHTTPClient implements RemoteNetClient {
         PoolingHttpClientConnectionManager cm = POOLING_HTTP_CLIENT_CONNECTION_MANAGER_MAP.get(this.nodeCode);
 
         // 处理HTTP链接
-        String uri = parseHttpUrl(req);
+        String uri = parseHttpUrl(req,nodeKey);
 
         CloseableHttpClient httpclient;
         if (this.nodeKey.proxyEnable()) {

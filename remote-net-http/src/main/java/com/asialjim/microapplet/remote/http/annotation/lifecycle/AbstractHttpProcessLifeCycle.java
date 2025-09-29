@@ -21,14 +21,17 @@ import com.asialjim.microapplet.remote.context.RemoteResContext;
 import com.asialjim.microapplet.remote.lifecycle.callback.After;
 import com.asialjim.microapplet.remote.lifecycle.callback.Before;
 import com.asialjim.microapplet.remote.lifecycle.callback.Invoke;
+import com.asialjim.microapplet.remote.net.annotation.ServerLifeCycle;
 import com.asialjim.microapplet.remote.net.annotation.Ssl;
 import com.asialjim.microapplet.remote.net.client.RemoteNetClient;
 import com.asialjim.microapplet.remote.net.constant.RemoteConstant;
+import com.asialjim.microapplet.remote.net.context.RemoteNetNodeKey;
 import com.asialjim.microapplet.remote.net.response.ResWithHeader;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.Assert;
 
 import javax.net.ssl.SSLContext;
 import java.util.HashMap;
@@ -51,7 +54,10 @@ public abstract class AbstractHttpProcessLifeCycle implements Before, Invoke, Af
         String url = req.get(AbstractHttpMappingLifeCycle.HTTP_REQUEST_URI);
         Map<String, String> headers = Optional.ofNullable(req.get(AbstractHttpHeaderLifeCycle.HTTP_HEADER_VALUE)).orElseGet(HashMap::new);
         headers.putIfAbsent("User-Agent", "Remote HTTP Client on Java 8");
-        headers.putIfAbsent("Host", req.get(RemoteConstant.HOST));
+        RemoteNetNodeKey node = req.get(ServerLifeCycle.NET_NODE_KEY_GENERIC_KEY);
+        Assert.notNull(node,"服务器环境未配置");
+
+        headers.putIfAbsent("Host", node.getHost());
         req.put(AbstractHttpHeaderLifeCycle.HTTP_HEADER_VALUE, headers);
 
         log.info("Remote NET Req Line >>> Client:{} >>> {} {}://{}:{}{}", methodConfig.getRemoteName(), req.get(AbstractHttpMappingLifeCycle.HTTP_METHOD_KEY), req.get(RemoteConstant.SCHEMA), req.get(RemoteConstant.HOST), req.get(RemoteConstant.PORT), url);
