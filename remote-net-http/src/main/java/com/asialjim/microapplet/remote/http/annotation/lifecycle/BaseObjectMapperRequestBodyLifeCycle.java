@@ -18,7 +18,7 @@ package com.asialjim.microapplet.remote.http.annotation.lifecycle;
 import com.asialjim.microapplet.remote.context.*;
 import com.asialjim.microapplet.remote.lifecycle.callback.Invoke;
 import com.asialjim.microapplet.remote.net.constant.RemoteConstant;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
 
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;

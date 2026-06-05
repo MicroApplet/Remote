@@ -22,12 +22,12 @@ import com.asialjim.microapplet.remote.lifecycle.callback.Before;
 import com.asialjim.microapplet.remote.lifecycle.callback.Invoke;
 import com.asialjim.microapplet.remote.net.jackson.AbstractJacksonUtil;
 import com.asialjim.microapplet.remote.net.mime.MimeMenu;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.multipart.MultipartFile;
+import tools.jackson.databind.ObjectMapper;
 
 import java.io.File;
 import java.io.InputStream;
