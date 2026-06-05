@@ -16,6 +16,9 @@
 package com.asialjim.microapplet.remote.context;
 
 import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import org.apache.commons.lang3.ArrayUtils;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Parameter;
@@ -26,6 +29,7 @@ import java.util.List;
 import java.util.Objects;
 
 @Data
+@Getter
 public class RemoteMethodParameter {
     private transient final String name;
     private transient final Type type;
@@ -44,7 +48,7 @@ public class RemoteMethodParameter {
         this.parameter = parameter;
         this.parameterAnnotations = new ArrayList<>();
         Annotation[] annotations = parameter.getAnnotations();
-        if (Objects.nonNull(annotations) && annotations.length > 0)
+        if (ArrayUtils.isNotEmpty(annotations))
             this.parameterAnnotations.addAll(Arrays.asList(annotations));
     }
 

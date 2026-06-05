@@ -19,7 +19,7 @@ import com.asialjim.microapplet.remote.lifecycle.CallBack;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.annotation.PostConstruct;
+import jakarta.annotation.PostConstruct;
 
 
 public interface ApiServerRepository extends CallBack {
