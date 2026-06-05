@@ -186,6 +186,7 @@
         </dependency>
     </dependencies>
 
+
     <build>
         <!--发布到maven 中央仓库-->
         <plugins>
@@ -227,7 +228,6 @@
                     <preparationGoals>
                         clean
                         versions:use-releases
-                        versions:update-parent
                         verify
                     </preparationGoals>
                 </configuration>
@@ -253,7 +253,7 @@
                         <id>pre-release-update</id>
                         <phase>validate</phase>
                         <goals>
-                            <goal>update-parent</goal>
+
                             <goal>update-child-modules</goal>
                         </goals>
                     </execution>
@@ -263,7 +263,7 @@
                         <!--suppress MybatisXMapperXmlInspection, MybatisPlusMapperXmlInspection, MavenModelInspection -->
                         <phase>post-release</phase>
                         <goals>
-                            <goal>update-parent</goal>
+
                             <goal>update-child-modules</goal>
                         </goals>
                     </execution>
@@ -343,7 +343,7 @@
                 </executions>
             </plugin> -->
 
-                    <!-- 编译工具 -->
+            <!-- 编译工具 -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -353,7 +353,7 @@
                     <target>${maven.compiler.target}</target>
                     <encoding>UTF-8</encoding>
                     <compilerArgument>-parameters</compilerArgument>
-                    <!--
+
                     <annotationProcessorPaths>
                         <path>
                             <groupId>org.projectlombok</groupId>
@@ -361,7 +361,6 @@
                             <version>1.18.46</version>
                         </path>
                     </annotationProcessorPaths>
-                    -->
                 </configuration>
             </plugin>
 
