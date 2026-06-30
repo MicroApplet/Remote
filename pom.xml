@@ -32,10 +32,7 @@
             <name>Asial Jim</name>
             <email>asialjim@hotmail.com</email>
             <url>https://github.com/asialjim</url>
-            <roleCheckers>
-                <roleChecker>Owner</roleChecker>
-                <roleChecker>developer</roleChecker>
-            </roleCheckers>
+
         </developer>
     </developers>
 
@@ -111,34 +108,7 @@
 
     <dependencyManagement>
         <dependencies>
-            <dependency>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-dependencies</artifactId>
-                <version>${spring-boot.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-            <dependency>
-                <groupId>com.baomidou</groupId>
-                <artifactId>mybatis-plus-bom</artifactId>
-                <version>${mybatis-plus.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-            <dependency>
-                <groupId>com.mybatis-flex</groupId>
-                <artifactId>mybatis-flex-dependencies</artifactId>
-                <version>${mybatis-flex.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-            <dependency>
-                <groupId>com.asialjim.microapplet</groupId>
-                <artifactId>commons-triple-dependencies</artifactId>
-                <version>${com.asialjim.microapplet}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
+
 
             <dependency>
                 <groupId>org.apache.commons</groupId>
